@@ -139,7 +139,7 @@ const Flashcard = () => {
             <TextField {...params} variant="outlined" label="Filter by Topics" placeholder="Select topics..." />
           )}
         />
-        <Stack direction="row" spacing={2}>
+        {/* <Stack direction="row" spacing={2}>
           <TextField
             label="From Date"
             type="date"
@@ -163,7 +163,7 @@ const Flashcard = () => {
           >
             Clear
           </Button>
-        </Stack>
+        </Stack> */}
       </Stack>
 
       <Box

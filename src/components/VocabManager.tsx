@@ -239,7 +239,7 @@ const VocabManager: React.FC = () => {
             <TextField {...params} variant="outlined" label="Filter by Topics" placeholder="Select topics..." />
           )}
         />
-        <Stack direction="row" spacing={2}>
+        {/* <Stack direction="row" spacing={2}>
           <TextField
             label="From Date"
             type="date"
@@ -263,7 +263,7 @@ const VocabManager: React.FC = () => {
           >
             Clear Filters
           </Button>
-        </Stack>
+        </Stack> */}
       </Stack>
 
       <Box sx={{ height: 500, width: '100%' }}>

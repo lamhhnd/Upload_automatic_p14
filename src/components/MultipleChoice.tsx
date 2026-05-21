@@ -172,7 +172,7 @@ const MultipleChoice = () => {
             <TextField {...params} variant="outlined" label="Filter by Topics" placeholder="Select topics..." />
           )}
         />
-        <Stack direction="row" spacing={2}>
+        {/* <Stack direction="row" spacing={2}>
           <TextField
             label="From Date"
             type="date"
@@ -197,7 +197,7 @@ const MultipleChoice = () => {
             }}
             fullWidth
           />
-        </Stack>
+        </Stack> */}
       </Stack>
 
       {filteredList.length === 0 ? (
