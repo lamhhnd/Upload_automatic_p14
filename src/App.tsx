@@ -1,54 +1,138 @@
-// App.tsx
-import React, { useEffect, useRef, useState } from "react";
-import FileSystemUpload from "./components/FileSystemUpload";
-import YourProcessingComponent from "./components/yourProcessingComponent";
+import { useState } from "react";
 
-const App: React.FC = () => {
-  const [currentFiles, setCurrentFiles] = useState<File[]>([]);
-  const [currentPartName, setCurrentPartName] = useState("");
-  const [progress, setProgress] = useState(0);
-  const [processKey, setProcessKey] = useState(0);
+import {
+  Box,
+  Button,
+  Container,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 
-  const completeResolver = useRef<(() => void) | null>(null);
+import Flashcard from "./components/Flashcard";
+import WritingMode from "./components/WritingMode";
+import MultipleChoice from "./components/MultipleChoice";
+import VocabManager from "./components/VocabManager";
+import { VocabProvider } from "./context/VocabContext";
 
-  const waitForProcessingComplete = () =>
-    new Promise<void>((resolve) => {
-      completeResolver.current = resolve;
-    });
-
-  const handleProcessingComplete = () => {
-    completeResolver.current?.();
-    completeResolver.current = null;
-  };
-
-  const handleProcessPart = async (files: File[], partName: string) => {
-    console.log(`===== Processing ${partName} =====`);
-
-    setCurrentPartName(partName);
-    setCurrentFiles(files);
-    setProgress(0);
-    setProcessKey((prev) => prev + 1);
-
-    // Chờ YourProcessingComponent xử lý xong toàn bộ file trong part
-    await waitForProcessingComplete();
-
-    console.log(`✅ Finished ${partName}`);
-  };
+function AppContent() {
+  const [mode, setMode] = useState<
+    "flashcard" | "writing" | "multiple" | "manage"
+  >("flashcard");
 
   return (
-    <>
-      <FileSystemUpload onProcessPart={handleProcessPart} />
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "#f4f6f8",
+        py: 5,
+      }}
+    >
+      <Container maxWidth={mode === "manage" ? "lg" : "md"}>
+        <Paper
+          elevation={3}
+          sx={{
+            p: 4,
+            borderRadius: 4,
+            backgroundColor: "#ffffff",
+            color: "#222",
+            boxShadow:
+              "0 8px 24px rgba(0,0,0,0.08)",
+          }}
+        >
+          <Typography
+            variant="h3"
+            gutterBottom
+            sx={{
+              fontWeight: 700,
+              textAlign: "center",
+            }}
+          >
+            Vocabulary App
+          </Typography>
 
-      <YourProcessingComponent
-        files={currentFiles}
-        partName={currentPartName}
-        progress={progress}
-        setProgress={setProgress}
-        processKey={processKey}
-        onComplete={handleProcessingComplete}
-      />
-    </>
+          <Typography
+            sx={{
+              textAlign: "center",
+              color: "#666",
+              mb: 4,
+            }}
+          >
+            Learn vocabulary with flashcards and quizzes
+          </Typography>
+
+          <Stack
+            direction="row"
+            spacing={2}
+            sx={{
+              justifyContent: "center",
+              mb: 4,
+              flexWrap: "wrap",
+              gap: 1
+            }}
+          >
+            <Button
+              variant={
+                mode === "flashcard"
+                  ? "contained"
+                  : "outlined"
+              }
+              onClick={() => setMode("flashcard")}
+            >
+              Flashcard
+            </Button>
+
+            <Button
+              variant={
+                mode === "writing"
+                  ? "contained"
+                  : "outlined"
+              }
+              onClick={() => setMode("writing")}
+            >
+              Writing
+            </Button>
+
+            <Button
+              variant={
+                mode === "multiple"
+                  ? "contained"
+                  : "outlined"
+              }
+              onClick={() => setMode("multiple")}
+            >
+              Multiple Choice
+            </Button>
+
+            <Button
+              variant={
+                mode === "manage"
+                  ? "contained"
+                  : "outlined"
+              }
+              color="secondary"
+              onClick={() => setMode("manage")}
+            >
+              Manage Vocab
+            </Button>
+          </Stack>
+
+          {mode === "flashcard" && <Flashcard />}
+          {mode === "writing" && <WritingMode />}
+          {mode === "multiple" && <MultipleChoice />}
+          {mode === "manage" && <VocabManager />}
+        </Paper>
+      </Container>
+    </Box>
   );
-};
+}
+
+function App() {
+  return (
+    <VocabProvider>
+      <AppContent />
+    </VocabProvider>
+  );
+}
 
 export default App;

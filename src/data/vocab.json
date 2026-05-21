@@ -1,0 +1,1322 @@
+[
+  {
+    "id": "1",
+    "english": "rural",
+    "vietnamese": "thuộc về nông thôn",
+    "type": "adj",
+    "example": "The area is still very rural.",
+    "image": "/images/1779247231598-rural.jpg",
+    "topic": "Environment",
+    "createdAt": "2026-05-21T00:56:09.637Z"
+  },
+  {
+    "id": "2",
+    "english": "whilst",
+    "vietnamese": "trong khi",
+    "type": "conjunction",
+    "example": "She listened to music whilst studying.",
+    "image": "/images/whilst.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "3",
+    "english": "sustainable",
+    "vietnamese": "bền vững",
+    "type": "adj",
+    "example": "This is a sustainable development project.",
+    "image": "/images/sustainable.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "4",
+    "english": "alternative",
+    "vietnamese": "thay thế",
+    "type": "adj",
+    "example": "We need an alternative solution.",
+    "image": "/images/alternative.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "5",
+    "english": "intermediate",
+    "vietnamese": "trung cấp",
+    "type": "adj",
+    "example": "She is at an intermediate level in English.",
+    "image": "/images/intermediate.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "6",
+    "english": "complement",
+    "vietnamese": "bổ sung",
+    "type": "verb",
+    "example": "Fresh vegetables complement the meal.",
+    "image": "/images/complement.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "7",
+    "english": "infrastructure",
+    "vietnamese": "cơ sở hạ tầng",
+    "type": "noun",
+    "example": "The city needs better infrastructure.",
+    "image": "/images/infrastructure.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "8",
+    "english": "socio-economic",
+    "vietnamese": "kinh tế xã hội",
+    "type": "adj",
+    "example": "The government focuses on socio-economic development.",
+    "image": "/images/socio-economic.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "9",
+    "english": "weathered roads",
+    "vietnamese": "những con đường bị hư hại do thời tiết",
+    "type": "noun phrase",
+    "example": "Many villages still have weathered roads.",
+    "image": "/images/weathered-roads.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "10",
+    "english": "stagnant",
+    "vietnamese": "trì trệ",
+    "type": "adj",
+    "example": "The country is facing a stagnant economy.",
+    "image": "/images/stagnant.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "11",
+    "english": "intervene",
+    "vietnamese": "can thiệp",
+    "type": "verb",
+    "example": "The police had to intervene in the conflict.",
+    "image": "/images/intervene.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "12",
+    "english": "intervention",
+    "vietnamese": "sự can thiệp",
+    "type": "noun",
+    "example": "Government intervention improved the situation.",
+    "image": "/images/intervention.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "13",
+    "english": "favourable",
+    "vietnamese": "thuận lợi",
+    "type": "adj",
+    "example": "The weather conditions are favourable.",
+    "image": "/images/favourable.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "14",
+    "english": "adequate",
+    "vietnamese": "đầy đủ",
+    "type": "adj",
+    "example": "Students should receive adequate support.",
+    "image": "/images/adequate.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "15",
+    "english": "restrict",
+    "vietnamese": "hạn chế",
+    "type": "verb",
+    "example": "The law restricts smoking in public places.",
+    "image": "/images/restrict.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "16",
+    "english": "rehabilitation",
+    "vietnamese": "sự phục hồi chức năng",
+    "type": "noun",
+    "example": "The patient is undergoing rehabilitation.",
+    "image": "/images/rehabilitation.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "17",
+    "english": "craft",
+    "vietnamese": "làm thủ công",
+    "type": "verb",
+    "example": "Local people craft handmade products.",
+    "image": "/images/craft.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "18",
+    "english": "hone",
+    "vietnamese": "trau dồi",
+    "type": "verb",
+    "example": "She honed her communication skills.",
+    "image": "/images/hone.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "19",
+    "english": "trailers",
+    "vietnamese": "xe kéo",
+    "type": "noun",
+    "example": "The truck was pulling heavy trailers.",
+    "image": "/images/trailers.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "20",
+    "english": "advocate",
+    "vietnamese": "ủng hộ",
+    "type": "verb",
+    "example": "Many experts advocate healthy eating habits.",
+    "image": "/images/advocate.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "21",
+    "english": "gravitation",
+    "vietnamese": "lực hấp dẫn",
+    "type": "noun",
+    "example": "Gravitation keeps planets in orbit.",
+    "image": "/images/gravitation.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "22",
+    "english": "regardless of",
+    "vietnamese": "bất kể",
+    "type": "phrase",
+    "example": "He continued regardless of the difficulties.",
+    "image": "/images/regardless-of.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "23",
+    "english": "attach",
+    "vietnamese": "đính kèm",
+    "type": "verb",
+    "example": "Please attach the document to the email.",
+    "image": "/images/attach.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "24",
+    "english": "queues",
+    "vietnamese": "hàng chờ",
+    "type": "noun",
+    "example": "People stood in long queues at the station.",
+    "image": "/images/queues.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "25",
+    "english": "wealthy",
+    "vietnamese": "giàu có",
+    "type": "adj",
+    "example": "The city is home to many wealthy families.",
+    "image": "/images/wealthy.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "26",
+    "english": "aspect",
+    "vietnamese": "khía cạnh",
+    "type": "noun",
+    "example": "We discussed every aspect of the issue.",
+    "image": "/images/aspect.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "27",
+    "english": "autograph",
+    "vietnamese": "chữ ký",
+    "type": "noun",
+    "example": "Fans asked for the celebrity's autograph.",
+    "image": "/images/autograph.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "28",
+    "english": "celebrities",
+    "vietnamese": "người nổi tiếng",
+    "type": "noun",
+    "example": "Many celebrities attended the event.",
+    "image": "/images/celebrities.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "29",
+    "english": "disproportionate",
+    "vietnamese": "không cân xứng",
+    "type": "adj",
+    "example": "There is a disproportionate distribution of wealth.",
+    "image": "/images/disproportionate.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "30",
+    "english": "resembling",
+    "vietnamese": "giống như",
+    "type": "verb",
+    "example": "The cloud was resembling a giant bird.",
+    "image": "/images/resembling.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "31",
+    "english": "precipitation",
+    "vietnamese": "lượng mưa",
+    "type": "noun",
+    "example": "Heavy precipitation caused flooding in the area.",
+    "image": "/images/precipitation.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "32",
+    "english": "concrete",
+    "vietnamese": "bê tông",
+    "type": "noun",
+    "example": "The bridge is made of concrete.",
+    "image": "/images/concrete.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "33",
+    "english": "triangle",
+    "vietnamese": "tam giác",
+    "type": "noun",
+    "example": "A triangle has three sides.",
+    "image": "/images/triangle.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "34",
+    "english": "mechanism",
+    "vietnamese": "cơ chế",
+    "type": "noun",
+    "example": "Scientists studied the mechanism of the disease.",
+    "image": "/images/mechanism.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "35",
+    "english": "estimate",
+    "vietnamese": "ước lượng",
+    "type": "verb",
+    "example": "Experts estimate the cost to be very high.",
+    "image": "/images/estimate.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "36",
+    "english": "rescue",
+    "vietnamese": "cứu",
+    "type": "verb",
+    "example": "Firefighters rescued the trapped family.",
+    "image": "/images/rescue.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "37",
+    "english": "act as a trigger for",
+    "vietnamese": "đóng vai trò như tác nhân cho",
+    "type": "phrase",
+    "example": "Stress can act as a trigger for illness.",
+    "image": "/images/as-a-trigger-for.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "38",
+    "english": "fraud",
+    "vietnamese": "gian lận",
+    "type": "noun",
+    "example": "The company was accused of financial fraud.",
+    "image": "/images/fraud.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "39",
+    "english": "optimistic",
+    "vietnamese": "lạc quan",
+    "type": "adj",
+    "example": "She remains optimistic about the future.",
+    "image": "/images/optimistic.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "40",
+    "english": "embrace",
+    "vietnamese": "đón nhận",
+    "type": "verb",
+    "example": "Young people should embrace new opportunities.",
+    "image": "/images/embrace.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "41",
+    "english": "speech",
+    "vietnamese": "bài phát biểu",
+    "type": "noun",
+    "example": "The president gave an inspiring speech.",
+    "image": "/images/speech.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "42",
+    "english": "race",
+    "vietnamese": "chủng tộc",
+    "type": "noun",
+    "example": "People should not be judged by race.",
+    "image": "/images/race.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "43",
+    "english": "bone",
+    "vietnamese": "xương",
+    "type": "noun",
+    "example": "Milk helps strengthen bones.",
+    "image": "/images/bone.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "44",
+    "english": "criticize",
+    "vietnamese": "phê bình",
+    "type": "verb",
+    "example": "The manager criticized his poor performance.",
+    "image": "/images/criticize.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "45",
+    "english": "at ease",
+    "vietnamese": "thoải mái",
+    "type": "phrase",
+    "example": "She felt at ease during the interview.",
+    "image": "/images/at-ease.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "46",
+    "english": "unruly",
+    "vietnamese": "bất trị, khó kiểm soát",
+    "type": "adj",
+    "example": "The teacher struggled with unruly students.",
+    "image": "/images/unruly.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "47",
+    "english": "adolescent",
+    "vietnamese": "người vị thành niên",
+    "type": "noun",
+    "example": "Adolescents often experience emotional changes.",
+    "image": "/images/adolescent.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "48",
+    "english": "dairy",
+    "vietnamese": "sản phẩm từ sữa",
+    "type": "noun",
+    "example": "Dairy products contain calcium.",
+    "image": "/images/dairy.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "49",
+    "english": "borough",
+    "vietnamese": "quận",
+    "type": "noun",
+    "example": "He lives in a quiet borough of the city.",
+    "image": "/images/borough.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "50",
+    "english": "resident",
+    "vietnamese": "cư dân",
+    "type": "noun",
+    "example": "Local residents opposed the new project.",
+    "image": "/images/resident.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "51",
+    "english": "otherwise",
+    "vietnamese": "nếu không thì",
+    "type": "adv",
+    "example": "Study hard; otherwise, you may fail the exam.",
+    "image": "/images/otherwise.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "52",
+    "english": "assess",
+    "vietnamese": "đánh giá",
+    "type": "verb",
+    "example": "Teachers assess students regularly.",
+    "image": "/images/assess.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "53",
+    "english": "geographer",
+    "vietnamese": "nhà địa lý học",
+    "type": "noun",
+    "example": "The geographer studied climate patterns.",
+    "image": "/images/geographer.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "54",
+    "english": "intersect",
+    "vietnamese": "giao nhau",
+    "type": "verb",
+    "example": "The two roads intersect in the town center.",
+    "image": "/images/intersect.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "55",
+    "english": "intersection",
+    "vietnamese": "sự giao nhau",
+    "type": "noun",
+    "example": "Traffic lights were installed at the intersection.",
+    "image": "/images/intersection.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "56",
+    "english": "arise",
+    "vietnamese": "phát sinh",
+    "type": "verb",
+    "example": "Problems may arise during the process.",
+    "image": "/images/arise.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "57",
+    "english": "suburban",
+    "vietnamese": "ngoại ô",
+    "type": "adj",
+    "example": "Many families prefer suburban areas.",
+    "image": "/images/suburban.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "58",
+    "english": "outcomes",
+    "vietnamese": "kết quả",
+    "type": "noun",
+    "example": "The outcomes of the project were impressive.",
+    "image": "/images/outcomes.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "59",
+    "english": "disparity",
+    "vietnamese": "sự chênh lệch",
+    "type": "noun",
+    "example": "There is a disparity between rich and poor.",
+    "image": "/images/disparity.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "60",
+    "english": "affluent",
+    "vietnamese": "giàu có",
+    "type": "adj",
+    "example": "The area is known for its affluent residents.",
+    "image": "/images/affluent.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "61",
+    "english": "landscapes",
+    "vietnamese": "cảnh quan",
+    "type": "noun",
+    "example": "Vietnam has many beautiful natural landscapes.",
+    "image": "/images/landscapes.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "62",
+    "english": "consult",
+    "vietnamese": "tư vấn",
+    "type": "verb",
+    "example": "You should consult a doctor for advice.",
+    "image": "/images/consult.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "63",
+    "english": "firm",
+    "vietnamese": "công ty",
+    "type": "noun",
+    "example": "She works for an international law firm.",
+    "image": "/images/firm.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "64",
+    "english": "come up with",
+    "vietnamese": "nghĩ ra",
+    "type": "phrasal verb",
+    "example": "He came up with a brilliant idea.",
+    "image": "/images/come-up-with.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "65",
+    "english": "cautious",
+    "vietnamese": "thận trọng",
+    "type": "adj",
+    "example": "Investors are cautious about the market.",
+    "image": "/images/cautious.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "66",
+    "english": "cope with",
+    "vietnamese": "đối phó với",
+    "type": "phrasal verb",
+    "example": "Students must learn to cope with stress.",
+    "image": "/images/cope-with.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "67",
+    "english": "assessment",
+    "vietnamese": "sự đánh giá",
+    "type": "noun",
+    "example": "The final assessment will take place next week.",
+    "image": "/images/assessment.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "68",
+    "english": "outperform",
+    "vietnamese": "vượt trội hơn",
+    "type": "verb",
+    "example": "The new model outperformed the old one.",
+    "image": "/images/outperform.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "69",
+    "english": "consistent",
+    "vietnamese": "nhất quán",
+    "type": "adj",
+    "example": "She has shown consistent improvement.",
+    "image": "/images/consistent.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "70",
+    "english": "consistently",
+    "vietnamese": "một cách nhất quán",
+    "type": "adv",
+    "example": "He consistently arrives on time.",
+    "image": "/images/consistently.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "71",
+    "english": "inevitable",
+    "vietnamese": "không thể tránh khỏi",
+    "type": "adj",
+    "example": "Change is inevitable in modern society.",
+    "image": "/images/inevitable.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "72",
+    "english": "decline",
+    "vietnamese": "suy giảm",
+    "type": "verb",
+    "example": "The number of visitors declined sharply.",
+    "image": "/images/decline.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "73",
+    "english": "typist",
+    "vietnamese": "người đánh máy",
+    "type": "noun",
+    "example": "The typist finished the report quickly.",
+    "image": "/images/typist.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "74",
+    "english": "turn out",
+    "vietnamese": "hóa ra",
+    "type": "phrasal verb",
+    "example": "The movie turned out to be excellent.",
+    "image": "/images/turn-out.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "75",
+    "english": "strategy",
+    "vietnamese": "chiến lược",
+    "type": "noun",
+    "example": "The company developed a new marketing strategy.",
+    "image": "/images/strategy.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "76",
+    "english": "efficient",
+    "vietnamese": "hiệu quả",
+    "type": "adj",
+    "example": "Public transport should be more efficient.",
+    "image": "/images/efficient.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "77",
+    "english": "shifts",
+    "vietnamese": "sự dịch chuyển",
+    "type": "noun",
+    "example": "There have been major shifts in consumer behavior.",
+    "image": "/images/shifts.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "78",
+    "english": "compensate",
+    "vietnamese": "đền bù",
+    "type": "verb",
+    "example": "The company compensated workers for the damage.",
+    "image": "/images/compensate.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "79",
+    "english": "reverse",
+    "vietnamese": "đảo ngược",
+    "type": "verb",
+    "example": "The government tried to reverse the decision.",
+    "image": "/images/reverse.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "80",
+    "english": "cage",
+    "vietnamese": "cái lồng",
+    "type": "noun",
+    "example": "The bird escaped from its cage.",
+    "image": "/images/cage.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "81",
+    "english": "predict",
+    "vietnamese": "dự đoán",
+    "type": "verb",
+    "example": "Scientists predict heavy rainfall tomorrow.",
+    "image": "/images/predict.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "82",
+    "english": "predictable",
+    "vietnamese": "có thể đoán trước",
+    "type": "adj",
+    "example": "His reaction was predictable.",
+    "image": "/images/predictable.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "83",
+    "english": "unpredictable",
+    "vietnamese": "không thể đoán trước",
+    "type": "adj",
+    "example": "The weather here is unpredictable.",
+    "image": "/images/unpredictable.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "84",
+    "english": "unpredictability",
+    "vietnamese": "sự khó lường",
+    "type": "noun",
+    "example": "The unpredictability of the market worries investors.",
+    "image": "/images/unpredictability.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "85",
+    "english": "underwent",
+    "vietnamese": "đã trải qua",
+    "type": "verb",
+    "example": "The city underwent rapid development.",
+    "image": "/images/underwent.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "86",
+    "english": "upheaval",
+    "vietnamese": "biến động",
+    "type": "noun",
+    "example": "The country experienced political upheaval.",
+    "image": "/images/upheaval.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "87",
+    "english": "marvelous",
+    "vietnamese": "tuyệt vời",
+    "type": "adj",
+    "example": "We had a marvelous time at the beach.",
+    "image": "/images/marvelous.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "88",
+    "english": "venture",
+    "vietnamese": "mạo hiểm",
+    "type": "verb",
+    "example": "Few people venture into the forest at night.",
+    "image": "/images/venture.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "89",
+    "english": "discharge",
+    "vietnamese": "thải ra / xuất viện",
+    "type": "verb",
+    "example": "The factory discharged waste into the river.",
+    "image": "/images/discharge.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "90",
+    "english": "swallow up",
+    "vietnamese": "nuốt chửng, bao trùm",
+    "type": "phrasal verb",
+    "example": "The sea swallowed up the small boat.",
+    "image": "/images/swallow-up.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "91",
+    "english": "reformist",
+    "vietnamese": "người cải cách",
+    "type": "noun",
+    "example": "The reformist proposed major educational changes.",
+    "image": "/images/reformist.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "92",
+    "english": "chronic",
+    "vietnamese": "mãn tính",
+    "type": "adj",
+    "example": "He suffers from chronic back pain.",
+    "image": "/images/chronic.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "93",
+    "english": "theme park",
+    "vietnamese": "công viên giải trí",
+    "type": "noun",
+    "example": "Children love visiting theme parks.",
+    "image": "/images/theme-park.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "94",
+    "english": "routine",
+    "vietnamese": "thói quen / lịch trình",
+    "type": "noun",
+    "example": "Exercise should be part of your daily routine.",
+    "image": "/images/routine.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "95",
+    "english": "psychologist",
+    "vietnamese": "nhà tâm lý học",
+    "type": "noun",
+    "example": "The psychologist helped the patient reduce stress.",
+    "image": "/images/psychologist.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "96",
+    "english": "substitute",
+    "vietnamese": "thay thế",
+    "type": "verb",
+    "example": "You can substitute water for milk in this recipe.",
+    "image": "/images/substitute.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "97",
+    "english": "rigid",
+    "vietnamese": "cứng nhắc",
+    "type": "adj",
+    "example": "The manager has a rigid attitude toward rules.",
+    "image": "/images/rigid.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "98",
+    "english": "apparently",
+    "vietnamese": "rõ ràng",
+    "type": "adv",
+    "example": "Apparently, the meeting has been canceled.",
+    "image": "/images/apparently.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "99",
+    "english": "shrink",
+    "vietnamese": "co lại",
+    "type": "verb",
+    "example": "Wool clothes may shrink after washing.",
+    "image": "/images/shrink.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "100",
+    "english": "commitment",
+    "vietnamese": "sự cam kết",
+    "type": "noun",
+    "example": "Success requires hard work and commitment.",
+    "image": "/images/commitment.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "101",
+    "english": "engagement",
+    "vietnamese": "hôn ước",
+    "type": "noun",
+    "example": "They announced their engagement last week.",
+    "image": "/images/1779248398661-engagemant.jpeg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "102",
+    "english": "propose",
+    "vietnamese": "đề xuất",
+    "type": "verb",
+    "example": "The committee proposed a new policy.",
+    "image": "/images/propose.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "103",
+    "english": "brand",
+    "vietnamese": "thương hiệu",
+    "type": "noun",
+    "example": "This brand is popular among teenagers.",
+    "image": "/images/brand.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "104",
+    "english": "concept",
+    "vietnamese": "ý tưởng",
+    "type": "noun",
+    "example": "The concept of the project is innovative.",
+    "image": "/images/concept.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "105",
+    "english": "billboard",
+    "vietnamese": "bảng quảng cáo",
+    "type": "noun",
+    "example": "The company placed a billboard downtown.",
+    "image": "/images/billboard.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "106",
+    "english": "auditory",
+    "vietnamese": "thuộc về thính giác",
+    "type": "adj",
+    "example": "Some students learn better through auditory methods.",
+    "image": "/images/auditory.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "107",
+    "english": "retail",
+    "vietnamese": "bán lẻ",
+    "type": "adj",
+    "example": "She works in the retail industry.",
+    "image": "/images/retail.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "108",
+    "english": "outlet",
+    "vietnamese": "cửa hàng",
+    "type": "noun",
+    "example": "The company opened a new outlet in Hanoi.",
+    "image": "/images/outlet.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.644Z"
+  },
+  {
+    "id": "109",
+    "english": "campaign",
+    "vietnamese": "chiến dịch",
+    "type": "noun",
+    "example": "The government launched a health campaign.",
+    "image": "/images/campaign.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "110",
+    "english": "catchy",
+    "vietnamese": "hấp dẫn, dễ nhớ",
+    "type": "adj",
+    "example": "The advertisement has a catchy slogan.",
+    "image": "/images/catchy.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "111",
+    "english": "cereal",
+    "vietnamese": "ngũ cốc",
+    "type": "noun",
+    "example": "Many people eat cereal for breakfast.",
+    "image": "/images/cereal.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "112",
+    "english": "preference",
+    "vietnamese": "sự ưu thích",
+    "type": "noun",
+    "example": "People have different food preferences.",
+    "image": "/images/preference.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "113",
+    "english": "transmit",
+    "vietnamese": "truyền tải",
+    "type": "verb",
+    "example": "Computers transmit data rapidly.",
+    "image": "/images/transmit.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "114",
+    "english": "colony",
+    "vietnamese": "thuộc địa",
+    "type": "noun",
+    "example": "The country was once a European colony.",
+    "image": "/images/colony.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "115",
+    "english": "dirt",
+    "vietnamese": "bụi bẩn",
+    "type": "noun",
+    "example": "The floor was covered in dirt.",
+    "image": "/images/dirt.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "116",
+    "english": "imitation",
+    "vietnamese": "sự bắt chước",
+    "type": "noun",
+    "example": "Children learn through imitation.",
+    "image": "/images/1779248305462-imitation.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "117",
+    "english": "imitate",
+    "vietnamese": "bắt chước",
+    "type": "verb",
+    "example": "Young children often imitate adults.",
+    "image": "/images/imitate.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "118",
+    "english": "primate",
+    "vietnamese": "loài linh trưởng",
+    "type": "noun",
+    "example": "Humans are classified as primates.",
+    "image": "/images/primate.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "119",
+    "english": "disproportionately",
+    "vietnamese": "một cách không cân xứng",
+    "type": "adv",
+    "example": "Poor communities were disproportionately affected.",
+    "image": "/images/disproportionately.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "120",
+    "english": "incline",
+    "vietnamese": "nghiêng",
+    "type": "verb",
+    "example": "The road inclines steeply uphill.",
+    "image": "/images/incline.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "121",
+    "english": "convince",
+    "vietnamese": "thuyết phục",
+    "type": "verb",
+    "example": "She convinced her parents to let her travel.",
+    "image": "/images/convince.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "1779263580720",
+    "english": "preferential",
+    "vietnamese": "ưu đãi, đãi ngộ",
+    "type": "adj",
+    "example": "The government offers preferential tax policies for small businesses",
+    "image": "/images/1779263580514-preferential.png",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "1779264954192",
+    "english": "extraordinarily",
+    "vietnamese": "phi thường",
+    "type": "adv",
+    "example": "The exam was extraordinarily difficult",
+    "image": "/images/1779264953917-extraordinarily.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "1779267562759",
+    "english": "archaeological",
+    "vietnamese": "Khảo cổ học",
+    "type": "adj",
+    "example": "The archaeological record of Uruk reveals the intensive building",
+    "image": "/images/1779267562550-archaeological.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "1779267734872",
+    "english": "dozen",
+    "vietnamese": "1 tá",
+    "type": "noun",
+    "example": "I bought a dozen oranges",
+    "image": "",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "1779267921798",
+    "english": "architecture",
+    "vietnamese": "kiến trúc",
+    "type": "noun",
+    "example": "Ancient architecture attracts many tourists",
+    "image": "/images/1779267921613-architecture.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "1779268126036",
+    "english": "revolutionary",
+    "vietnamese": "mang tính cách mạng",
+    "type": "adj",
+    "example": "Smartphones were a revolutionary invention",
+    "image": "/images/1779268125802-revolutionary.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "1779268793000",
+    "english": "emergence",
+    "vietnamese": "sự xuất hiện",
+    "type": "noun",
+    "example": "The emergence of smartphones has significantly changed human communication",
+    "image": "/images/1779268792759-emergence.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "1779269294216",
+    "english": "unprecedented",
+    "vietnamese": "chưa từng có",
+    "type": "adj",
+    "example": "The country is facing unprecedented economic challenges",
+    "image": "/images/1779269294051-unprecedented.jpg",
+    "topic": "General",
+    "createdAt": "2026-05-21T00:56:09.645Z"
+  },
+  {
+    "id": "1779329684787",
+    "english": "pavement",
+    "vietnamese": "Vỉa hè",
+    "type": "noun",
+    "example": "The old man was walking along the pavement",
+    "image": "",
+    "topic": "Traffic",
+    "createdAt": "2026-05-21T02:14:44.787Z"
+  },
+  {
+    "id": "1779330753018",
+    "english": "theoretical",
+    "vietnamese": "mang tính lý thuyết",
+    "type": "adj",
+    "example": "Many schools focus too much on theoretical knowledge instead of practical experience",
+    "image": "",
+    "topic": "Education",
+    "createdAt": "2026-05-21T02:32:33.018Z"
+  },
+  {
+    "id": "1779334785479",
+    "english": "reputation",
+    "vietnamese": "danh tiếng",
+    "type": "noun",
+    "example": "The company has a good reputation for customer service",
+    "image": "",
+    "topic": "Famous",
+    "createdAt": "2026-05-21T03:39:45.479Z"
+  }
+]
