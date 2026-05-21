@@ -35,8 +35,8 @@ const VocabManager: React.FC = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  // const [startDate, setStartDate] = useState('');
+  // const [endDate, setEndDate] = useState('');
   const [open, setOpen] = useState(false);
   const [editingVocab, setEditingVocab] = useState<Vocab | null>(null);
   const [formData, setFormData] = useState<Omit<Vocab, 'id' | 'createdAt'> & { imageFile?: File | null }>({
@@ -171,6 +171,7 @@ const VocabManager: React.FC = () => {
     const itemDate = item.createdAt ? new Date(item.createdAt) : null;
     let matchesDate = true;
 
+    /*
     if (itemDate) {
       if (startDate) {
         const start = new Date(startDate);
@@ -185,6 +186,7 @@ const VocabManager: React.FC = () => {
     } else if (startDate || endDate) {
       matchesDate = false;
     }
+    */
 
     return matchesSearch && matchesTopic && matchesDate;
   });

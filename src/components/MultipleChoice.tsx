@@ -25,8 +25,8 @@ const MultipleChoice = () => {
   const { vocabList, speak } = useVocab();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  // const [startDate, setStartDate] = useState("");
+  // const [endDate, setEndDate] = useState("");
   const [index, setIndex] = useState(0);
 
   const uniqueTopics = useMemo(() => {
@@ -57,6 +57,7 @@ const MultipleChoice = () => {
       const itemDate = item.createdAt ? new Date(item.createdAt) : null;
       let matchesDate = true;
 
+      /*
       if (itemDate) {
         if (startDate) {
           const start = new Date(startDate);
@@ -71,10 +72,11 @@ const MultipleChoice = () => {
       } else if (startDate || endDate) {
         matchesDate = false;
       }
+      */
 
       return matchesSearch && matchesTopic && matchesDate;
     });
-  }, [vocabList, searchTerm, selectedTopics, startDate, endDate]);
+  }, [vocabList, searchTerm, selectedTopics]); // Removed startDate, endDate
 
   const current = filteredList.length > 0 ? filteredList[index] || filteredList[0] : null;
 

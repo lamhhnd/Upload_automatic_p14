@@ -19,8 +19,8 @@ const Flashcard = () => {
   const { vocabList, speak } = useVocab();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  // const [startDate, setStartDate] = useState("");
+  // const [endDate, setEndDate] = useState("");
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
 
@@ -45,6 +45,7 @@ const Flashcard = () => {
       const itemDate = item.createdAt ? new Date(item.createdAt) : null;
       let matchesDate = true;
 
+      /*
       if (itemDate) {
         if (startDate) {
           const start = new Date(startDate);
@@ -59,16 +60,17 @@ const Flashcard = () => {
       } else if (startDate || endDate) {
         matchesDate = false;
       }
+      */
 
       return matchesSearch && matchesTopic && matchesDate;
     });
-  }, [vocabList, searchTerm, selectedTopics, startDate, endDate]);
+  }, [vocabList, searchTerm, selectedTopics]); // Removed startDate, endDate
 
   // Reset index về 0 khi tìm kiếm thay đổi
   useEffect(() => {
     setIndex(0);
     setFlipped(false);
-  }, [searchTerm, selectedTopics, startDate, endDate]);
+  }, [searchTerm, selectedTopics]); // Removed startDate, endDate
 
   if (vocabList.length === 0) {
     return (
