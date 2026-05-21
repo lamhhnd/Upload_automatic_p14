@@ -176,8 +176,8 @@ const Flashcard = () => {
         <Box
           onClick={() => setFlipped(!flipped)}
           sx={{
-            width: 500,
-            height: 400,
+            width: { xs: '100%', sm: 500 },
+            height: { xs: 300, sm: 400 },
             position: "relative",
             transformStyle: "preserve-3d",
             transition: "transform 0.6s ease",
@@ -196,11 +196,11 @@ const Flashcard = () => {
               alignItems: "center",
               justifyContent: "center",
               backfaceVisibility: "hidden",
-              borderRadius: 5,
+              borderRadius: { xs: 3, sm: 5 },
               backgroundColor: "#ffffff",
               border: "1px solid #e0e0e0",
               boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-              p: 3,
+              p: { xs: 2, sm: 3 },
             }}
           >
             {current.image && (
@@ -210,7 +210,7 @@ const Flashcard = () => {
                 alt={current.english}
                 sx={{
                   width: "100%",
-                  maxHeight: 200,
+                  maxHeight: { xs: 120, sm: 200 },
                   objectFit: "contain",
                   mb: 2,
                   borderRadius: 2,
@@ -223,6 +223,7 @@ const Flashcard = () => {
                 sx={{
                   fontWeight: 700,
                   color: "#1976d2",
+                  fontSize: { xs: '2rem', sm: '3rem' }
                 }}
               >
                 {current.english}
@@ -258,11 +259,11 @@ const Flashcard = () => {
               justifyContent: "center",
               backfaceVisibility: "hidden",
               transform: "rotateY(180deg)",
-              borderRadius: 5,
+              borderRadius: { xs: 3, sm: 5 },
               backgroundColor: "#1976d2",
               color: "white",
               boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-              p: 3,
+              p: { xs: 2, sm: 3 },
             }}
           >
             <Typography
@@ -270,6 +271,7 @@ const Flashcard = () => {
               sx={{
                 fontWeight: 700,
                 mb: 2,
+                fontSize: { xs: '2rem', sm: '3rem' }
               }}
             >
               {current.vietnamese}
@@ -280,6 +282,7 @@ const Flashcard = () => {
                 textAlign: "center",
                 opacity: 0.9,
                 fontWeight: 400,
+                fontSize: { xs: '1rem', sm: '1.25rem' }
               }}
             >
               {current.example}

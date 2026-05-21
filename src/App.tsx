@@ -25,15 +25,16 @@ function AppContent() {
       sx={{
         minHeight: "100vh",
         backgroundColor: "#f4f6f8",
-        py: 5,
+        py: { xs: 2, sm: 5 },
+        pb: { xs: 10, sm: 5 }, // Extra padding for mobile nav
       }}
     >
-      <Container maxWidth={mode === "manage" ? "lg" : "md"}>
+      <Container maxWidth={mode === "manage" ? "lg" : "md"} sx={{ px: { xs: 1, sm: 2 } }}>
         <Paper
           elevation={3}
           sx={{
-            p: 4,
-            borderRadius: 4,
+            p: { xs: 2, sm: 4 },
+            borderRadius: { xs: 2, sm: 4 },
             backgroundColor: "#ffffff",
             color: "#222",
             boxShadow:
@@ -41,86 +42,72 @@ function AppContent() {
           }}
         >
           <Typography
-            variant="h3"
+            variant="h4"
             gutterBottom
             sx={{
-              fontWeight: 700,
+              fontWeight: 800,
               textAlign: "center",
+              fontSize: { xs: '1.75rem', sm: '2.5rem' },
+              color: '#1976d2'
             }}
           >
-            Vocabulary App
-          </Typography>
-
-          <Typography
-            sx={{
-              textAlign: "center",
-              color: "#666",
-              mb: 4,
-            }}
-          >
-            Learn vocabulary with flashcards and quizzes
+            EnglishLearn
           </Typography>
 
           <Stack
             direction="row"
-            spacing={2}
+            spacing={1}
             sx={{
               justifyContent: "center",
               mb: 4,
               flexWrap: "wrap",
-              gap: 1
+              gap: 1,
+              // On mobile, show as a grid or scrollable if many
+              display: { xs: 'grid', sm: 'flex' },
+              gridTemplateColumns: { xs: '1fr 1fr', sm: 'none' }
             }}
           >
             <Button
-              variant={
-                mode === "flashcard"
-                  ? "contained"
-                  : "outlined"
-              }
+              fullWidth
+              variant={mode === "flashcard" ? "contained" : "outlined"}
               onClick={() => setMode("flashcard")}
+              sx={{ borderRadius: 2 }}
             >
               Flashcard
             </Button>
-
             <Button
-              variant={
-                mode === "writing"
-                  ? "contained"
-                  : "outlined"
-              }
+              fullWidth
+              variant={mode === "writing" ? "contained" : "outlined"}
               onClick={() => setMode("writing")}
+              sx={{ borderRadius: 2 }}
             >
               Writing
             </Button>
-
             <Button
-              variant={
-                mode === "multiple"
-                  ? "contained"
-                  : "outlined"
-              }
+              fullWidth
+              variant={mode === "multiple" ? "contained" : "outlined"}
               onClick={() => setMode("multiple")}
+              sx={{ borderRadius: 2 }}
             >
-              Multiple Choice
+              Quiz
             </Button>
-
             <Button
-              variant={
-                mode === "manage"
-                  ? "contained"
-                  : "outlined"
-              }
+              fullWidth
+              variant={mode === "manage" ? "contained" : "outlined"}
               color="secondary"
               onClick={() => setMode("manage")}
+              sx={{ borderRadius: 2 }}
             >
-              Manage Vocab
+              Manage
             </Button>
           </Stack>
 
-          {mode === "flashcard" && <Flashcard />}
-          {mode === "writing" && <WritingMode />}
-          {mode === "multiple" && <MultipleChoice />}
-          {mode === "manage" && <VocabManager />}
+          <Box sx={{ mt: 2 }}>
+            {mode === "flashcard" && <Flashcard />}
+            {mode === "writing" && <WritingMode />}
+            {mode === "multiple" && <MultipleChoice />}
+            {mode === "manage" && <VocabManager />}
+          </Box>
         </Paper>
       </Container>
     </Box>
