@@ -63,14 +63,39 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     if ('speechSynthesis' in window) {
       // Hủy mọi yêu cầu phát âm đang chờ
       window.speechSynthesis.cancel();
+      
       const utterance = new SpeechSynthesisUtterance(text);
+      
+      // Lấy danh sách các giọng đọc có sẵn trong trình duyệt
+      const voices = window.speechSynthesis.getVoices();
+      
+      // Ưu tiên chọn giọng tiếng Anh chất lượng cao (thường là của Google hoặc Apple)
+      // Tìm giọng "Google US English", "Samantha" (Apple), hoặc bất kỳ giọng en-US nào
+      const preferredVoice = voices.find(v => v.name.includes('Google US English')) || 
+                             voices.find(v => v.name.includes('Samantha')) ||
+                             voices.find(v => v.lang === 'en-US' && v.localService === false) ||
+                             voices.find(v => v.lang.startsWith('en-'));
+      
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+      }
+      
       utterance.lang = 'en-US';
-      utterance.rate = 0.9; // Tốc độ nói hơi chậm một chút để dễ nghe
+      utterance.rate = 0.9;
+      utterance.pitch = 1;
+      
       window.speechSynthesis.speak(utterance);
     } else {
       console.error('Trình duyệt không hỗ trợ phát âm.');
     }
   };
+
+  // Đối với một số trình duyệt, cần lắng nghe sự kiện voiceschanged để lấy danh sách giọng đọc
+  useEffect(() => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.getVoices();
+    }
+  }, []);
 
   const saveImageToDisk = async (file: File): Promise<string> => {
     if (!dirHandle) {
