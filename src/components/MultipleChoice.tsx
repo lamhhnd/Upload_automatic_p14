@@ -54,10 +54,10 @@ const MultipleChoice = () => {
         selectedTopics.length === 0 || 
         (item.topic && selectedTopics.includes(item.topic));
 
+      /*
       const itemDate = item.createdAt ? new Date(item.createdAt) : null;
       let matchesDate = true;
 
-      /*
       if (itemDate) {
         if (startDate) {
           const start = new Date(startDate);
@@ -74,7 +74,7 @@ const MultipleChoice = () => {
       }
       */
 
-      return matchesSearch && matchesTopic && matchesDate;
+      return matchesSearch && matchesTopic;
     });
   }, [vocabList, searchTerm, selectedTopics]); // Removed startDate, endDate
 
