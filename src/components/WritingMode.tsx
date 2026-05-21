@@ -9,7 +9,6 @@ import {
   Typography,
   IconButton,
   Autocomplete,
-  Chip,
 } from "@mui/material";
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
@@ -93,6 +92,7 @@ const WritingMode = () => {
   };
 
   const nextQuestion = () => {
+    if (filteredList.length <= 1) return;
     setIndex(
       randomIndex(filteredList.length, index)
     );
@@ -145,19 +145,9 @@ const WritingMode = () => {
       placeholder="Select topics..."
     />
   )}
-  renderValue={(value, getItemProps) =>
-    value.map((option, index) => (
-      <Chip
-        label={option}
-        variant="outlined"
-        size="small"
-        {...getItemProps({ index })}
-      />
-    ))
-  }
 />
 
-        <Stack direction="row" spacing={2}>
+        {/* <Stack direction="row" spacing={2}>
           <TextField
             label="From Date"
             type="date"
@@ -184,7 +174,7 @@ const WritingMode = () => {
             }}
             fullWidth
           />
-        </Stack>
+        </Stack> */}
       </Stack>
 
       {filteredList.length === 0 ? (
@@ -272,6 +262,7 @@ const WritingMode = () => {
               <Button
                 variant="outlined"
                 onClick={nextQuestion}
+                disabled={filteredList.length <= 1}
               >
                 Next
               </Button>

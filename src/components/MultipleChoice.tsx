@@ -306,6 +306,7 @@ const MultipleChoice = () => {
           variant="contained"
           size="large"
           onClick={nextQuestion}
+          disabled={filteredList.length <= 1}
         >
           Next Question
         </Button>
