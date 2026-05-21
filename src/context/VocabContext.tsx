@@ -35,27 +35,7 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [dirHandle, setDirHandle] = useState<FileSystemDirectoryHandle | null>(null);
   const [projectFolder, setProjectFolder] = useState<string>('');
 
-  useEffect(() => {
-    localStorage.setItem('vocab_data', JSON.stringify(vocabList));
-    if (dirHandle) {
-      saveToDisk(vocabList);
-    }
-  }, [vocabList, dirHandle]);
-
-  const speak = (text: string) => {
-    if ('speechSynthesis' in window) {
-      // Hủy mọi yêu cầu phát âm đang chờ
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
-      utterance.rate = 0.9; // Tốc độ nói hơi chậm một chút để dễ nghe
-      window.speechSynthesis.speak(utterance);
-    } else {
-      console.error('Trình duyệt không hỗ trợ phát âm.');
-    }
-  };
-
-  const saveToDisk = async (data: Vocab[]) => {
+  const saveToDisk = React.useCallback(async (data: Vocab[]) => {
     if (!dirHandle) return;
     try {
       // Tự động tạo src và src/data nếu thiếu
@@ -69,6 +49,26 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       console.log('Successfully saved vocab.json to disk');
     } catch (err) {
       console.error('Failed to save to disk:', err);
+    }
+  }, [dirHandle]);
+
+  useEffect(() => {
+    localStorage.setItem('vocab_data', JSON.stringify(vocabList));
+    if (dirHandle) {
+      saveToDisk(vocabList);
+    }
+  }, [vocabList, dirHandle, saveToDisk]);
+
+  const speak = (text: string) => {
+    if ('speechSynthesis' in window) {
+      // Hủy mọi yêu cầu phát âm đang chờ
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.9; // Tốc độ nói hơi chậm một chút để dễ nghe
+      window.speechSynthesis.speak(utterance);
+    } else {
+      console.error('Trình duyệt không hỗ trợ phát âm.');
     }
   };
 
