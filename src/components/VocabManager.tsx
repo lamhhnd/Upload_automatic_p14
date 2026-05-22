@@ -34,7 +34,6 @@ const VocabManager: React.FC = () => {
     addVocab, 
     updateVocab, 
     deleteVocab, 
-    resetToDefault, 
     connectProjectFolder, 
     speak,
     exportVocab,
