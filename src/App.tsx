@@ -18,11 +18,13 @@ import StyleIcon from '@mui/icons-material/Style';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import QuizIcon from '@mui/icons-material/Quiz';
 import SettingsIcon from '@mui/icons-material/Settings';
+import SearchIcon from '@mui/icons-material/Search';
 
 import Flashcard from "./components/Flashcard";
 import WritingMode from "./components/WritingMode";
 import MultipleChoice from "./components/MultipleChoice";
 import VocabManager from "./components/VocabManager";
+import DictionarySearch from "./components/DictionarySearch";
 import { VocabProvider } from "./context/VocabContext";
 
 const theme = createTheme({
@@ -50,7 +52,7 @@ const theme = createTheme({
 
 function AppContent() {
   const [mode, setMode] = useState<
-    "flashcard" | "writing" | "multiple" | "manage"
+    "flashcard" | "writing" | "multiple" | "search" | "manage"
   >("flashcard");
 
   const muiTheme = useTheme();
@@ -66,7 +68,7 @@ function AppContent() {
         pb: { xs: 12, sm: 4 },
       }}
     >
-      <Container maxWidth={mode === "manage" ? "lg" : "sm"}>
+      <Container maxWidth={mode === "manage" || mode === "search" ? "lg" : "sm"}>
         <Box sx={{ mb: 4, textAlign: 'center' }}>
           <Typography
             variant="h4"
@@ -104,7 +106,10 @@ function AppContent() {
               <BottomNavigation
                 showLabels
                 value={mode}
-                onChange={(_, newValue) => setMode(newValue)}
+                onChange={(_, newValue) => {
+                  setMode(newValue);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 sx={{ 
                   borderRadius: 3, 
                   backgroundColor: '#f1f5f9',
@@ -115,6 +120,7 @@ function AppContent() {
                 <BottomNavigationAction label="Cards" value="flashcard" icon={<StyleIcon />} />
                 <BottomNavigationAction label="Write" value="writing" icon={<EditNoteIcon />} />
                 <BottomNavigationAction label="Quiz" value="multiple" icon={<QuizIcon />} />
+                <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} />
                 <BottomNavigationAction label="Manage" value="manage" icon={<SettingsIcon />} />
               </BottomNavigation>
             </Box>
@@ -124,6 +130,7 @@ function AppContent() {
             {mode === "flashcard" && <Flashcard />}
             {mode === "writing" && <WritingMode />}
             {mode === "multiple" && <MultipleChoice />}
+            {mode === "search" && <DictionarySearch />}
             {mode === "manage" && <VocabManager />}
           </Box>
         </Paper>
@@ -138,12 +145,16 @@ function AppContent() {
           <BottomNavigation
             showLabels
             value={mode}
-            onChange={(_, newValue) => setMode(newValue)}
+            onChange={(_, newValue) => {
+              setMode(newValue);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
             sx={{ height: 72 }}
           >
             <BottomNavigationAction label="Cards" value="flashcard" icon={<StyleIcon />} />
             <BottomNavigationAction label="Write" value="writing" icon={<EditNoteIcon />} />
             <BottomNavigationAction label="Quiz" value="multiple" icon={<QuizIcon />} />
+            <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} />
             <BottomNavigationAction label="Manage" value="manage" icon={<SettingsIcon />} />
           </BottomNavigation>
         </Paper>

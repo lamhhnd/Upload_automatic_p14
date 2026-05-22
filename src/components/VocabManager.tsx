@@ -18,7 +18,15 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FolderIcon from '@mui/icons-material/Folder';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import SearchIcon from '@mui/icons-material/Search';
+import TranslateIcon from '@mui/icons-material/Translate';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useVocab, Vocab } from '../context/VocabContext';
+import DictionaryDialog from './DictionaryDialog';
+import { translateToVietnamese } from '../services/TranslationService';
 
 const VocabManager: React.FC = () => {
   const { 
@@ -29,6 +37,8 @@ const VocabManager: React.FC = () => {
     resetToDefault, 
     connectProjectFolder, 
     speak,
+    exportVocab,
+    importVocab,
     isFolderConnected,
     projectFolder 
   } = useVocab();
@@ -38,6 +48,8 @@ const VocabManager: React.FC = () => {
   // const [startDate, setStartDate] = useState('');
   // const [endDate, setEndDate] = useState('');
   const [open, setOpen] = useState(false);
+  const [dictionaryOpen, setDictionaryOpen] = useState(false);
+  const [dictionaryWord, setDictionaryWord] = useState('');
   const [editingVocab, setEditingVocab] = useState<Vocab | null>(null);
   const [formData, setFormData] = useState<Omit<Vocab, 'id' | 'createdAt'> & { imageFile?: File | null }>({
     english: '',
@@ -50,6 +62,20 @@ const VocabManager: React.FC = () => {
   });
 
   const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [isTranslating, setIsTranslating] = useState(false);
+
+  const handleTranslate = async () => {
+    if (!formData.english.trim()) return;
+    setIsTranslating(true);
+    try {
+      const translation = await translateToVietnamese(formData.english);
+      if (translation) {
+        setFormData(prev => ({ ...prev, vietnamese: translation }));
+      }
+    } finally {
+      setIsTranslating(false);
+    }
+  };
 
   const uniqueTopics = useMemo(() => {
     const topics = vocabList
@@ -100,6 +126,19 @@ const VocabManager: React.FC = () => {
     setEditingVocab(null);
   };
 
+  const handleOpenDictionary = (word: string) => {
+    setDictionaryWord(word);
+    setDictionaryOpen(true);
+  };
+
+  const handleDictionarySelect = (data: { type: string; example: string }) => {
+    setFormData(prev => ({
+      ...prev,
+      type: prev.type || data.type,
+      example: prev.example || data.example
+    }));
+  };
+
   const handleSubmit = async () => {
     if (!formData.english.trim() || !formData.vietnamese.trim()) {
       alert('Vui lòng nhập cả từ tiếng Anh và tiếng Việt.');
@@ -124,6 +163,17 @@ const VocabManager: React.FC = () => {
     }
   };
 
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const success = await importVocab(file);
+      if (success) {
+        alert('Nhập dữ liệu thành công!');
+      }
+      e.target.value = '';
+    }
+  };
+
   const columns: GridColDef[] = [
     { field: 'english', headerName: 'English', width: 150 },
     { field: 'vietnamese', headerName: 'Vietnamese', width: 200 },
@@ -142,16 +192,19 @@ const VocabManager: React.FC = () => {
     {
       field: 'actions',
       headerName: 'Actions',
-      width: 150,
+      width: 180,
       renderCell: (params) => (
-        <Stack direction="row" spacing={1} sx={{ alignItems: 'center', height: '100%' }}>
-          <IconButton size="small" color="primary" onClick={() => speak(params.row.english)}>
+        <Stack direction="row" spacing={0.5} sx={{ alignItems: 'center', height: '100%' }}>
+          <IconButton size="small" color="primary" onClick={() => speak(params.row.english)} title="Speak">
             <VolumeUpIcon fontSize="small" />
           </IconButton>
-          <IconButton size="small" onClick={() => handleOpen(params.row)}>
+          <IconButton size="small" color="secondary" onClick={() => handleOpenDictionary(params.row.english)} title="Dictionary">
+            <MenuBookIcon fontSize="small" />
+          </IconButton>
+          <IconButton size="small" onClick={() => handleOpen(params.row)} title="Edit">
             <EditIcon fontSize="small" />
           </IconButton>
-          <IconButton size="small" color="error" onClick={() => handleDelete(params.row.id)}>
+          <IconButton size="small" color="error" onClick={() => handleDelete(params.row.id)} title="Delete">
             <DeleteIcon fontSize="small" />
           </IconButton>
         </Stack>
@@ -214,11 +267,39 @@ const VocabManager: React.FC = () => {
         <Typography variant="h5" sx={{ fontWeight: 700 }}>
           Vocabulary Management {isFolderConnected && <Typography component="span" color="success.main" variant="caption"> (Connected: {projectFolder})</Typography>}
         </Typography>
-        <Stack direction="row" spacing={2}>
-          <Button variant="outlined" color="error" onClick={resetToDefault}>
-            Reset to Default
+        <Stack 
+          direction={{ xs: 'column', sm: 'row' }} 
+          spacing={1} 
+          sx={{ width: { xs: '100%', sm: 'auto' } }}
+        >
+          <Button 
+            variant="outlined" 
+            color="info" 
+            startIcon={<FileDownloadIcon />}
+            onClick={exportVocab}
+            size="small"
+            fullWidth
+          >
+            Export
           </Button>
-          <Button variant="contained" color="primary" onClick={() => handleOpen()}>
+          <Button 
+            variant="outlined" 
+            color="info" 
+            component="label"
+            startIcon={<FileUploadIcon />}
+            size="small"
+            fullWidth
+          >
+            Import
+            <input type="file" hidden accept=".json" onChange={handleImport} />
+          </Button>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={() => handleOpen()} 
+            size="small"
+            fullWidth
+          >
             Add New Word
           </Button>
         </Stack>
@@ -241,31 +322,6 @@ const VocabManager: React.FC = () => {
             <TextField {...params} variant="outlined" label="Filter by Topics" placeholder="Select topics..." />
           )}
         />
-        {/* <Stack direction="row" spacing={2}>
-          <TextField
-            label="From Date"
-            type="date"
-            slotProps={{ inputLabel: { shrink: true } }}
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            fullWidth
-          />
-          <TextField
-            label="To Date"
-            type="date"
-            slotProps={{ inputLabel: { shrink: true } }}
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            fullWidth
-          />
-          <Button 
-            variant="outlined" 
-            onClick={() => { setStartDate(''); setEndDate(''); setSearchTerm(''); setSelectedTopics([]); }}
-            sx={{ whiteSpace: 'nowrap' }}
-          >
-            Clear Filters
-          </Button>
-        </Stack> */}
       </Stack>
 
       <Box sx={{ height: 500, width: '100%' }}>
@@ -284,7 +340,7 @@ const VocabManager: React.FC = () => {
 
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>{editingVocab ? 'Edit Word' : 'Add New Word'}</DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
           <Stack spacing={2} sx={{ mt: 1 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <TextField
@@ -294,19 +350,38 @@ const VocabManager: React.FC = () => {
                 onChange={(e) => setFormData({ ...formData, english: e.target.value })}
               />
               <IconButton 
+                color="secondary" 
+                onClick={() => handleOpenDictionary(formData.english)}
+                disabled={!formData.english.trim()}
+                title="Lookup Dictionary"
+              >
+                <SearchIcon />
+              </IconButton>
+              <IconButton 
                 color="primary" 
                 onClick={() => speak(formData.english)}
                 disabled={!formData.english.trim()}
+                title="Speak"
               >
                 <VolumeUpIcon />
               </IconButton>
             </Box>
-            <TextField
-              label="Vietnamese"
-              fullWidth
-              value={formData.vietnamese}
-              onChange={(e) => setFormData({ ...formData, vietnamese: e.target.value })}
-            />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <TextField
+                label="Vietnamese"
+                fullWidth
+                value={formData.vietnamese}
+                onChange={(e) => setFormData({ ...formData, vietnamese: e.target.value })}
+              />
+              <IconButton 
+                color="info" 
+                onClick={handleTranslate}
+                disabled={!formData.english.trim() || isTranslating}
+                title="Auto Translate"
+              >
+                {isTranslating ? <CircularProgress size={24} /> : <TranslateIcon />}
+              </IconButton>
+            </Box>
             <TextField
               label="Type (e.g. n, v, adj, adv)"
               fullWidth
@@ -397,6 +472,13 @@ const VocabManager: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <DictionaryDialog 
+        open={dictionaryOpen}
+        onClose={() => setDictionaryOpen(false)}
+        word={dictionaryWord}
+        onSelectData={open ? handleDictionarySelect : undefined}
+      />
     </Box>
   );
 };

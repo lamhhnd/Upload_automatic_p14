@@ -11,21 +11,22 @@ import {
   Autocomplete,
 } from "@mui/material";
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 import { useVocab } from "../context/VocabContext";
 import { randomIndex } from "./random";
+import DictionaryDialog from "./DictionaryDialog";
 
 const WritingMode = () => {
   const { vocabList, speak } = useVocab();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  // const [startDate, setStartDate] = useState("");
-  // const [endDate, setEndDate] = useState("");
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState("");
   const [result, setResult] = useState<
     "" | "correct" | "wrong"
   >("");
+  const [dictionaryOpen, setDictionaryOpen] = useState(false);
 
   const uniqueTopics = useMemo(() => {
     const topics = vocabList
@@ -45,29 +46,9 @@ const WritingMode = () => {
         selectedTopics.length === 0 || 
         (item.topic && selectedTopics.includes(item.topic));
 
-      /*
-      const itemDate = item.createdAt ? new Date(item.createdAt) : null;
-      let matchesDate = true;
-
-      if (itemDate) {
-        if (startDate) {
-          const start = new Date(startDate);
-          start.setHours(0, 0, 0, 0);
-          if (itemDate < start) matchesDate = false;
-        }
-        if (endDate) {
-          const end = new Date(endDate);
-          end.setHours(23, 59, 59, 999);
-          if (itemDate > end) matchesDate = false;
-        }
-      } else if (startDate || endDate) {
-        matchesDate = false;
-      }
-      */
-
       return matchesSearch && matchesTopic;
     });
-  }, [vocabList, searchTerm, selectedTopics]); // Removed startDate, endDate
+  }, [vocabList, searchTerm, selectedTopics]);
 
   if (vocabList.length === 0) {
     return (
@@ -103,20 +84,12 @@ const WritingMode = () => {
   };
 
   return (
-    <Box>
-      <Typography
-        variant="h4"
-        sx={{
-          textAlign: "center",
-          mb: 3,
-          fontWeight: 600,
-        }}
-      >
+    <Box sx={{ maxWidth: 500, mx: 'auto' }}>
+      <Typography variant="h4" sx={{ textAlign: "center", mb: 3, fontWeight: 700 }}>
         Writing Mode
       </Typography>
 
-      {/* SEARCH & FILTERS */}
-      <Stack spacing={2} sx={{ mb: 4 }}>
+      <Stack spacing={2} sx={{ mb: 3 }}>
         <TextField
           fullWidth
           variant="outlined"
@@ -129,167 +102,101 @@ const WritingMode = () => {
               setResult("");
           }}
         />
-       <Autocomplete
-  multiple
-  options={uniqueTopics}
-  value={selectedTopics}
-  onChange={(_, newValue) => {
-    setSelectedTopics(newValue);
-    setIndex(0);
-    setAnswer("");
-    setResult("");
-  }}
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      variant="outlined"
-      label="Filter by Topics"
-      placeholder="Select topics..."
-    />
-  )}
-/>
-
-        {/* <Stack direction="row" spacing={2}>
-          <TextField
-            label="From Date"
-            type="date"
-            slotProps={{ inputLabel: { shrink: true } }}
-            value={startDate}
-            onChange={(e) => {
-                setStartDate(e.target.value);
-                setIndex(0);
-                setAnswer("");
-                setResult("");
-            }}
-            fullWidth
-          />
-          <TextField
-            label="To Date"
-            type="date"
-            slotProps={{ inputLabel: { shrink: true } }}
-            value={endDate}
-            onChange={(e) => {
-                setEndDate(e.target.value);
-                setIndex(0);
-                setAnswer("");
-                setResult("");
-            }}
-            fullWidth
-          />
-        </Stack> */}
+        <Autocomplete
+          multiple
+          options={uniqueTopics}
+          value={selectedTopics}
+          onChange={(_, newValue) => {
+            setSelectedTopics(newValue);
+            setIndex(0);
+            setAnswer("");
+            setResult("");
+          }}
+          renderInput={(params) => (
+            <TextField {...params} variant="outlined" label="Filter by Topics" placeholder="Select topics..." />
+          )}
+        />
       </Stack>
 
       {filteredList.length === 0 ? (
           <Alert severity="info">No words found with current filters.</Alert>
       ) : current ? (
-          <>
-            {/* VOCAB IMAGE */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {current.image && (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  mb: 3,
-                }}
-              >
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <Box
                   component="img"
                   src={current.image}
                   alt="Vocabulary hint"
                   sx={{
-                    maxWidth: "100%",
-                    maxHeight: 250,
-                    objectFit: "contain",
-                    borderRadius: 2,
+                    width: '100%',
+                    height: 200,
+                    objectFit: "cover",
+                    borderRadius: 3,
                     boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                    border: "1px solid #eee"
                   }}
                 />
               </Box>
             )}
 
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, mb: 1 }}>
-              <Typography
-                variant="h5"
-                sx={{
-                  textAlign: "center",
-                }}
-              >
-                {current.vietnamese}
-              </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
+              <Typography variant="h5" sx={{ fontWeight: 600 }}>{current.vietnamese}</Typography>
               <IconButton color="primary" onClick={() => speak(current.english)} size="small">
-                <VolumeUpIcon fontSize="small" />
+                <VolumeUpIcon />
               </IconButton>
             </Box>
 
-            <Typography
-              variant="body2"
-              sx={{
-                textAlign: "center",
-                mb: 3,
-                color: "#666",
-                fontStyle: "italic",
-              }}
-            >
+            <Typography variant="body2" sx={{ textAlign: "center", color: "#666", fontStyle: "italic" }}>
               Type: {current.type}
             </Typography>
+<TextField
+  fullWidth
+  label="English word"
+  value={answer}
+  onChange={(e) => setAnswer(e.target.value)}
+  onKeyPress={(e) => e.key === "Enter" && checkAnswer()}
+  disabled={result !== ""}
+/>
 
-            <TextField
-              fullWidth
-              label="English word"
-              value={answer}
-              onChange={(e) =>
-                setAnswer(e.target.value)
-              }
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  checkAnswer();
-                }
-              }}
-              autoFocus
+            {/* Fixed height container for status feedback */}
+            <Box sx={{ minHeight: 120 }}>
+              {result === "" && (
+                <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
+                  <Button fullWidth variant="contained" onClick={checkAnswer}>Check</Button>
+                  <Button fullWidth variant="outlined" onClick={nextQuestion} disabled={filteredList.length <= 1}>Next</Button>
+                </Stack>
+              )}
+
+              {result === "correct" && (
+                <Box sx={{ mt: 1 }}>
+                  <Alert 
+                    severity="success"
+                    action={<Button color="inherit" size="small" startIcon={<MenuBookIcon />} onClick={() => setDictionaryOpen(true)}>Explore</Button>}
+                  >
+                    Correct!
+                  </Alert>
+                  <Typography variant="body1" sx={{ mt: 1, fontStyle: "italic" }}>Example: {current.example}</Typography>
+                  <Button fullWidth variant="contained" sx={{ mt: 1 }} onClick={nextQuestion}>Continue</Button>
+                </Box>
+              )}
+
+              {result === "wrong" && (
+                <Box sx={{ mt: 1 }}>
+                  <Alert severity="error">Wrong! Answer: <strong>{current.english}</strong></Alert>
+                  <Button fullWidth variant="contained" sx={{ mt: 1 }} onClick={nextQuestion}>Try Next</Button>
+                </Box>
+              )}
+            </Box>
+
+            <DictionaryDialog 
+              open={dictionaryOpen}
+              onClose={() => setDictionaryOpen(false)}
+              word={current.english}
             />
-
-            <Stack
-              direction="row"
-              spacing={2}
-              sx={{ mt: 3 }}
-            >
-              <Button
-                variant="contained"
-                onClick={checkAnswer}
-              >
-                Check
-              </Button>
-
-              <Button
-                variant="outlined"
-                onClick={nextQuestion}
-                disabled={filteredList.length <= 1}
-              >
-                Next
-              </Button>
-            </Stack>
-
-            {result === "correct" && (
-              <Box sx={{ mt: 3 }}>
-                <Alert severity="success">
-                  Correct!
-                </Alert>
-                <Typography variant="body1" sx={{ mt: 2, fontStyle: "italic" }}>
-                  Example: {current.example}
-                </Typography>
-              </Box>
-            )}
-
-            {result === "wrong" && (
-              <Alert severity="error" sx={{ mt: 3 }}>
-                Wrong! Correct answer:{" "}
-                {current.english}
-              </Alert>
-            )}
-          </>
+          </Box>
       ) : null}
     </Box>
+
   );
 };
 

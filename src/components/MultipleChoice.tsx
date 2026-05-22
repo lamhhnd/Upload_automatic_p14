@@ -135,7 +135,7 @@ const MultipleChoice = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ pb: 4 }}>
       <Typography
         variant="h4"
         sx={{
@@ -148,7 +148,7 @@ const MultipleChoice = () => {
         Multiple Choice
       </Typography>
 
-      {/* SEARCH & FILTERS */}
+      {/* SEARCH & FILTERS - Optimized to not auto-trigger re-renders or layout jumps */}
       <Stack spacing={2} sx={{ mb: 4 }}>
         <TextField
           fullWidth
@@ -174,146 +174,78 @@ const MultipleChoice = () => {
             <TextField {...params} variant="outlined" label="Filter by Topics" placeholder="Select topics..." />
           )}
         />
-        {/* <Stack direction="row" spacing={2}>
-          <TextField
-            label="From Date"
-            type="date"
-            slotProps={{ inputLabel: { shrink: true } }}
-            value={startDate}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setStartDate(e.target.value);
-                setIndex(0);
-                setResult("");
-            }}
-            fullWidth
-          />
-          <TextField
-            label="To Date"
-            type="date"
-            slotProps={{ inputLabel: { shrink: true } }}
-            value={endDate}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                setEndDate(e.target.value);
-                setIndex(0);
-                setResult("");
-            }}
-            fullWidth
-          />
-        </Stack> */}
       </Stack>
 
       {filteredList.length === 0 ? (
           <Alert severity="info">No words found with current filters.</Alert>
       ) : current ? (
-          <>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {/* MODE SWITCH */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          mb: 4,
-        }}
-      >
-        <ToggleButtonGroup
-          exclusive
-          value={mode}
-          onChange={(_, value) => {
-            if (value) {
-              setMode(value);
-              setResult("");
-            }
-          }}
-        >
-          <ToggleButton value="vn-to-en">
-            VN → EN
-          </ToggleButton>
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <ToggleButtonGroup
+                exclusive
+                value={mode}
+                onChange={(_, value) => {
+                  if (value) {
+                    setMode(value);
+                    setResult("");
+                  }
+                }}
+              >
+                <ToggleButton value="vn-to-en">VN → EN</ToggleButton>
+                <ToggleButton value="en-to-vn">EN → VN</ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
 
-          <ToggleButton value="en-to-vn">
-            EN → VN
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </Box>
+            {/* QUESTION */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1 }}>
+              <Typography variant="h5" sx={{ textAlign: "center", color: "#333", fontWeight: 600 }}>
+                {mode === "vn-to-en" ? current.vietnamese : current.english}
+              </Typography>
+              {mode === "en-to-vn" && (
+                <IconButton color="primary" onClick={() => speak(current.english)}>
+                  <VolumeUpIcon />
+                </IconButton>
+              )}
+            </Box>
 
-      {/* QUESTION */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, mb: 4 }}>
-        <Typography
-          variant="h5"
-          sx={{
-            textAlign: "center",
-            color: "#333",
-            fontWeight: 600,
-          }}
-        >
-          {mode === "vn-to-en"
-            ? current.vietnamese
-            : current.english}
-        </Typography>
-        {mode === "en-to-vn" && (
-          <IconButton color="primary" onClick={() => speak(current.english)}>
-            <VolumeUpIcon />
-          </IconButton>
-        )}
-      </Box>
+            {/* ANSWERS */}
+            <Stack spacing={1.5}>
+              {choices.map((choice) => {
+                const answerText = mode === "vn-to-en" ? choice.english : choice.vietnamese;
+                return (
+                  <Button
+                    key={choice.id}
+                    variant="outlined"
+                    size="large"
+                    onClick={() => chooseAnswer(answerText)}
+                    disabled={result !== ""}
+                    sx={{ py: 1.5, textTransform: "none", fontSize: 16 }}
+                  >
+                    {answerText}
+                  </Button>
+                );
+              })}
+            </Stack>
 
-      {/* ANSWERS */}
-      <Stack spacing={2}>
-        {choices.map((choice) => {
-          const answerText =
-            mode === "vn-to-en"
-              ? choice.english
-              : choice.vietnamese;
+            {/* RESULT & NEXT CONTAINER */}
+            <Box sx={{ mt: 1, minHeight: 100 }}>
+              {result === "correct" && <Alert severity="success" sx={{ mb: 1 }}>Correct!</Alert>}
+              {result === "wrong" && <Alert severity="error" sx={{ mb: 1 }}>Wrong Answer!</Alert>}
 
-          return (
-            <Button
-              key={choice.id}
-              variant="outlined"
-              size="large"
-              onClick={() =>
-                chooseAnswer(answerText)
-              }
-              sx={{
-                py: 1.5,
-                textTransform: "none",
-                fontSize: 18,
-              }}
-            >
-              {answerText}
-            </Button>
-          );
-        })}
-      </Stack>
-
-      {/* RESULT */}
-      {result === "correct" && (
-        <Alert severity="success" sx={{ mt: 3 }}>
-          Correct!
-        </Alert>
-      )}
-
-      {result === "wrong" && (
-        <Alert severity="error" sx={{ mt: 3 }}>
-          Wrong Answer!
-        </Alert>
-      )}
-
-      {/* NEXT */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          mt: 4,
-        }}
-      >
-        <Button
-          variant="contained"
-          size="large"
-          onClick={nextQuestion}
-          disabled={filteredList.length <= 1}
-        >
-          Next Question
-        </Button>
-      </Box>
-          </>
+              {result !== "" && (
+                <Button
+                  fullWidth
+                  variant="contained"
+                  size="large"
+                  onClick={nextQuestion}
+                  disabled={filteredList.length <= 1}
+                >
+                  Next Question
+                </Button>
+              )}
+            </Box>
+          </Box>
       ) : null}
     </Box>
   );

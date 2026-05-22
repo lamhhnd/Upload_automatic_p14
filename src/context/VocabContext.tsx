@@ -20,6 +20,8 @@ interface VocabContextType {
   resetToDefault: () => void;
   connectProjectFolder: () => Promise<void>;
   speak: (text: string) => void;
+  exportVocab: () => void;
+  importVocab: (file: File) => Promise<boolean>;
   isFolderConnected: boolean;
   projectFolder: string;
 }
@@ -240,6 +242,40 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setVocabList((prev) => prev.filter((v) => v.id !== id));
   };
 
+  const exportVocab = () => {
+    const dataStr = JSON.stringify(vocabList, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `vocab_export_${new Date().toISOString().split('T')[0]}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+  };
+
+  const importVocab = async (file: File): Promise<boolean> => {
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      
+      if (Array.isArray(data)) {
+        // Simple validation
+        const isValid = data.every(item => item.id && item.english && item.vietnamese);
+        if (isValid) {
+          setVocabList(data);
+          return true;
+        }
+      }
+      alert('File JSON không đúng cấu trúc từ vựng.');
+      return false;
+    } catch (err) {
+      console.error('Import failed:', err);
+      alert('Lỗi khi đọc file JSON.');
+      return false;
+    }
+  };
+
   const resetToDefault = () => {
     if (window.confirm('Bạn có chắc muốn reset toàn bộ dữ liệu về mặc định?')) {
       setVocabList(initialVocabData as Vocab[]);
@@ -255,6 +291,8 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         resetToDefault, 
         connectProjectFolder, 
         speak,
+        exportVocab,
+        importVocab,
         isFolderConnected: !!dirHandle,
         projectFolder
     }}>

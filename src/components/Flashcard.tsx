@@ -11,18 +11,19 @@ import {
   Autocomplete,
 } from "@mui/material";
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 import { useVocab } from "../context/VocabContext";
 import { randomIndex } from "./random";
+import DictionaryDialog from "./DictionaryDialog";
 
 const Flashcard = () => {
   const { vocabList, speak } = useVocab();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  // const [startDate, setStartDate] = useState("");
-  // const [endDate, setEndDate] = useState("");
   const [index, setIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
+  const [dictionaryOpen, setDictionaryOpen] = useState(false);
 
   const uniqueTopics = useMemo(() => {
     const topics = vocabList
@@ -42,35 +43,15 @@ const Flashcard = () => {
         selectedTopics.length === 0 || 
         (item.topic && selectedTopics.includes(item.topic));
 
-      /*
-      const itemDate = item.createdAt ? new Date(item.createdAt) : null;
-      let matchesDate = true;
-
-      if (itemDate) {
-        if (startDate) {
-          const start = new Date(startDate);
-          start.setHours(0, 0, 0, 0);
-          if (itemDate < start) matchesDate = false;
-        }
-        if (endDate) {
-          const end = new Date(endDate);
-          end.setHours(23, 59, 59, 999);
-          if (itemDate > end) matchesDate = false;
-        }
-      } else if (startDate || endDate) {
-        matchesDate = false;
-      }
-      */
-
       return matchesSearch && matchesTopic;
     });
-  }, [vocabList, searchTerm, selectedTopics]); // Removed startDate, endDate
+  }, [vocabList, searchTerm, selectedTopics]);
 
   // Reset index về 0 khi tìm kiếm thay đổi
   useEffect(() => {
     setIndex(0);
     setFlipped(false);
-  }, [searchTerm, selectedTopics]); // Removed startDate, endDate
+  }, [searchTerm, selectedTopics]);
 
   if (vocabList.length === 0) {
     return (
@@ -80,28 +61,38 @@ const Flashcard = () => {
     );
   }
 
+  const current = filteredList[index] || filteredList[0];
+
   if (filteredList.length === 0) {
     return (
       <Box>
         <Typography variant="h4" sx={{ textAlign: "center", mb: 4, fontWeight: 700 }}>
           Flashcard
         </Typography>
-        <TextField
-          fullWidth
-          variant="outlined"
-          label="Search word..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ mb: 4 }}
-        />
+        <Stack spacing={2} sx={{ mb: 4 }}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            label="Search by English or Vietnamese..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <Autocomplete
+            multiple
+            options={uniqueTopics}
+            value={selectedTopics}
+            onChange={(_, newValue: string[]) => setSelectedTopics(newValue)}
+            renderInput={(params) => (
+              <TextField {...params} variant="outlined" label="Filter by Topics" placeholder="Select topics..." />
+            )}
+          />
+        </Stack>
         <Typography sx={{ textAlign: "center", color: "#666" }}>
           No words match your search.
         </Typography>
       </Box>
     );
   }
-
-  const current = filteredList[index] || filteredList[0];
 
   const nextCard = () => {
     if (filteredList.length <= 1) return;
@@ -141,31 +132,6 @@ const Flashcard = () => {
             <TextField {...params} variant="outlined" label="Filter by Topics" placeholder="Select topics..." />
           )}
         />
-        {/* <Stack direction="row" spacing={2}>
-          <TextField
-            label="From Date"
-            type="date"
-            slotProps={{ inputLabel: { shrink: true } }}
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            fullWidth
-          />
-          <TextField
-            label="To Date"
-            type="date"
-            slotProps={{ inputLabel: { shrink: true } }}
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            fullWidth
-          />
-          <Button 
-            variant="outlined" 
-            onClick={() => { setStartDate(''); setEndDate(''); setSearchTerm(''); setSelectedTopics([]); }}
-            sx={{ whiteSpace: 'nowrap' }}
-          >
-            Clear
-          </Button>
-        </Stack> */}
       </Stack>
 
       <Box
@@ -173,13 +139,14 @@ const Flashcard = () => {
           perspective: "1000px",
           display: "flex",
           justifyContent: "center",
+          height: { xs: 320, sm: 420 },
         }}
       >
         <Box
           onClick={() => setFlipped(!flipped)}
           sx={{
             width: { xs: '100%', sm: 500 },
-            height: { xs: 300, sm: 400 },
+            height: '100%',
             position: "relative",
             transformStyle: "preserve-3d",
             transition: "transform 0.6s ease",
@@ -198,11 +165,11 @@ const Flashcard = () => {
               alignItems: "center",
               justifyContent: "center",
               backfaceVisibility: "hidden",
-              borderRadius: { xs: 3, sm: 5 },
+              borderRadius: 4,
               backgroundColor: "#ffffff",
               border: "1px solid #e0e0e0",
               boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-              p: { xs: 2, sm: 3 },
+              p: 3,
             }}
           >
             {current.image && (
@@ -212,41 +179,28 @@ const Flashcard = () => {
                 alt={current.english}
                 sx={{
                   width: "100%",
-                  maxHeight: { xs: 120, sm: 200 },
-                  objectFit: "contain",
+                  maxHeight: { xs: 120, sm: 180 },
+                  objectFit: "cover",
                   mb: 2,
                   borderRadius: 2,
                 }}
               />
             )}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography
-                variant="h3"
-                sx={{
-                  fontWeight: 700,
-                  color: "#1976d2",
-                  fontSize: { xs: '2rem', sm: '3rem' }
-                }}
-              >
-                {current.english}
-              </Typography>
-              <IconButton 
-                color="primary" 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  speak(current.english);
-                }}
-                sx={{ backgroundColor: 'rgba(25, 118, 210, 0.05)' }}
-              >
-                <VolumeUpIcon />
-              </IconButton>
-            </Box>
-            <Typography
-              variant="subtitle1"
-              sx={{ color: "#666", fontStyle: "italic" }}
-            >
+            <Typography variant="h3" sx={{ fontWeight: 700, color: "#1976d2", fontSize: { xs: '2rem', sm: '3rem' } }}>
+              {current.english}
+            </Typography>
+            <Typography variant="subtitle1" sx={{ color: "#666", fontStyle: "italic", mb: 2 }}>
               ({current.type})
             </Typography>
+            
+            <Stack direction="row" spacing={1} onClick={(e) => e.stopPropagation()}>
+              <IconButton color="secondary" onClick={() => setDictionaryOpen(true)} title="Lookup Dictionary">
+                <MenuBookIcon />
+              </IconButton>
+              <IconButton color="primary" onClick={() => speak(current.english)} title="Speak">
+                <VolumeUpIcon />
+              </IconButton>
+            </Stack>
           </Card>
 
           {/* Back */}
@@ -261,56 +215,30 @@ const Flashcard = () => {
               justifyContent: "center",
               backfaceVisibility: "hidden",
               transform: "rotateY(180deg)",
-              borderRadius: { xs: 3, sm: 5 },
+              borderRadius: 4,
               backgroundColor: "#1976d2",
               color: "white",
               boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-              p: { xs: 2, sm: 3 },
+              p: 3,
             }}
           >
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: 700,
-                mb: 2,
-                fontSize: { xs: '2rem', sm: '3rem' }
-              }}
-            >
+            <Typography variant="h3" sx={{ fontWeight: 700, mb: 2, fontSize: { xs: '2rem', sm: '3rem' } }}>
               {current.vietnamese}
             </Typography>
-            <Typography
-              variant="h6"
-              sx={{
-                textAlign: "center",
-                opacity: 0.9,
-                fontWeight: 400,
-                fontSize: { xs: '1rem', sm: '1.25rem' }
-              }}
-            >
+            <Typography variant="h6" sx={{ textAlign: "center", opacity: 0.9, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
               {current.example}
             </Typography>
           </Card>
         </Box>
       </Box>
 
-      <Typography
-        sx={{
-          textAlign: "center",
-          mt: 3,
-          color: "#666",
-        }}
-      >
+      <Typography sx={{ textAlign: "center", mt: 3, mb: 3, color: "#666" }}>
         Click vào card để lật
       </Typography>
 
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          mt: 3,
-        }}
-      >
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Button
+          fullWidth
           variant="contained"
           size="large"
           onClick={nextCard}
@@ -319,9 +247,16 @@ const Flashcard = () => {
           Next Card
         </Button>
       </Box>
+
       <Typography variant="body2" sx={{ textAlign: 'center', mt: 1, color: '#999' }}>
         Words found: {filteredList.length}
       </Typography>
+
+      <DictionaryDialog 
+        open={dictionaryOpen}
+        onClose={() => setDictionaryOpen(false)}
+        word={current.english}
+      />
     </Box>
   );
 };
