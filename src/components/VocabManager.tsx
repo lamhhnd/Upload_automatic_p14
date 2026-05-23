@@ -181,11 +181,30 @@ const VocabManager: React.FC = () => {
     { 
       field: 'createdAt', 
       headerName: 'Created At', 
-      width: 180,
+      width: 150,
       valueFormatter: (value) => {
         if (!value) return '';
-        return new Date(value as string).toLocaleString();
+        return new Date(value as string).toLocaleDateString();
       }
+    },
+    { 
+      field: 'lastSeen', 
+      headerName: 'Last Seen', 
+      width: 150,
+      valueFormatter: (value) => {
+        if (!value) return 'Never';
+        return new Date(value as string).toLocaleDateString();
+      }
+    },
+    { 
+      field: 'stats', 
+      headerName: 'Progress (C/W)', 
+      width: 120,
+      renderCell: (params) => (
+        <Typography variant="body2">
+          {params.row.correctCount || 0} / {params.row.wrongCount || 0}
+        </Typography>
+      )
     },
     { field: 'example', headerName: 'Example', width: 250 },
     {

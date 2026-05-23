@@ -25,6 +25,7 @@ import WritingMode from "./components/WritingMode";
 import MultipleChoice from "./components/MultipleChoice";
 import VocabManager from "./components/VocabManager";
 import DictionarySearch from "./components/DictionarySearch";
+import DateRangeSelector from "./components/DateRangeSelector";
 import { VocabProvider } from "./context/VocabContext";
 
 const theme = createTheme({
@@ -80,7 +81,7 @@ function AppContent() {
               mb: 1
             }}
           >
-            EnglishLearn
+            Learn Ielts Vocab
           </Typography>
           {!isMobile && (
             <Typography variant="body2" color="text.secondary">
@@ -127,6 +128,9 @@ function AppContent() {
           )}
 
           <Box>
+            {(mode === "flashcard" || mode === "writing" || mode === "multiple") && (
+              <DateRangeSelector />
+            )}
             {mode === "flashcard" && <Flashcard />}
             {mode === "writing" && <WritingMode />}
             {mode === "multiple" && <MultipleChoice />}

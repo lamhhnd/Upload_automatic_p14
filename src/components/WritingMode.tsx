@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 
 import {
   Alert,
@@ -9,18 +9,21 @@ import {
   Typography,
   IconButton,
   Autocomplete,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 import { useVocab } from "../context/VocabContext";
-import { randomIndex } from "./random";
+import { getSmartRandomIndex } from "./random";
 import DictionaryDialog from "./DictionaryDialog";
 
 const WritingMode = () => {
-  const { vocabList, speak } = useVocab();
+  const { filteredVocabList, speak, updateStats } = useVocab();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [dateFilter, setDateFilter] = useState<number>(0);
   const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState("");
   const [result, setResult] = useState<
@@ -29,15 +32,15 @@ const WritingMode = () => {
   const [dictionaryOpen, setDictionaryOpen] = useState(false);
 
   const uniqueTopics = useMemo(() => {
-    const topics = vocabList
+    const topics = filteredVocabList
       .map((v) => v.topic)
       .filter((t): t is string => !!t);
     return Array.from(new Set(topics)).sort();
-  }, [vocabList]);
+  }, [filteredVocabList]);
 
-  // Lọc danh sách từ vựng theo nội dung tìm kiếm và thời gian
+  // Lọc danh sách từ vựng theo nội dung tìm kiếm, chủ đề và thời gian
   const filteredList = useMemo(() => {
-    return vocabList.filter((item) => {
+    return filteredVocabList.filter((item) => {
       const matchesSearch =
         item.english.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.vietnamese.toLowerCase().includes(searchTerm.toLowerCase());
@@ -46,15 +49,37 @@ const WritingMode = () => {
         selectedTopics.length === 0 || 
         (item.topic && selectedTopics.includes(item.topic));
 
-      return matchesSearch && matchesTopic;
-    });
-  }, [vocabList, searchTerm, selectedTopics]);
+      let matchesDate = true;
+      if (dateFilter !== 0 && item.createdAt) {
+        const itemDate = new Date(item.createdAt);
+        const now = new Date();
+        const diffTime = now.getTime() - itemDate.getTime();
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        matchesDate = diffDays < dateFilter;
+      }
 
-  if (vocabList.length === 0) {
+      return matchesSearch && matchesTopic && matchesDate;
+    });
+  }, [filteredVocabList, searchTerm, selectedTopics, dateFilter]);
+
+  // Reset index khi bộ lọc thay đổi
+  useEffect(() => {
+    if (filteredList.length > 0) {
+      setIndex(Math.floor(Math.random() * filteredList.length));
+    } else {
+      setIndex(0);
+    }
+    setAnswer("");
+    setResult("");
+  }, [searchTerm, selectedTopics, dateFilter, filteredList.length]);
+
+  if (filteredVocabList.length === 0) {
     return (
-      <Typography sx={{ textAlign: "center" }}>
-        No vocabulary found. Please add some words in the Management tab.
-      </Typography>
+      <Box sx={{ maxWidth: 500, mx: 'auto' }}>
+        <Typography sx={{ textAlign: "center", color: "#666" }}>
+          No vocabulary found. Please add some words in the Management tab.
+        </Typography>
+      </Box>
     );
   }
 
@@ -67,27 +92,24 @@ const WritingMode = () => {
       current.english.toLowerCase()
     ) {
       setResult("correct");
+      updateStats(current.id, true);
       // Phát âm khi trả lời đúng
       speak(current.english);
     } else {
       setResult("wrong");
+      updateStats(current.id, false);
     }
   };
 
   const nextQuestion = () => {
     if (filteredList.length <= 1) return;
-    setIndex(
-      randomIndex(filteredList.length, index)
-    );
+    setIndex(getSmartRandomIndex(filteredList, index));
     setAnswer("");
     setResult("");
   };
 
   return (
     <Box sx={{ maxWidth: 500, mx: 'auto' }}>
-      <Typography variant="h4" sx={{ textAlign: "center", mb: 3, fontWeight: 700 }}>
-        Writing Mode
-      </Typography>
 
       <Stack spacing={2} sx={{ mb: 3 }}>
         <TextField
@@ -95,27 +117,31 @@ const WritingMode = () => {
           variant="outlined"
           label="Search by English or Vietnamese..."
           value={searchTerm}
-          onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setIndex(0);
-              setAnswer("");
-              setResult("");
-          }}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
         <Autocomplete
           multiple
           options={uniqueTopics}
           value={selectedTopics}
-          onChange={(_, newValue) => {
-            setSelectedTopics(newValue);
-            setIndex(0);
-            setAnswer("");
-            setResult("");
-          }}
+          onChange={(_, newValue) => setSelectedTopics(newValue)}
           renderInput={(params) => (
             <TextField {...params} variant="outlined" label="Filter by Topics" placeholder="Select topics..." />
           )}
         />
+        <ToggleButtonGroup
+          value={dateFilter}
+          exclusive
+          onChange={(_, newDate) => {
+            if (newDate !== null) setDateFilter(newDate);
+          }}
+          aria-label="date filter"
+          fullWidth
+        >
+          <ToggleButton value={1}>1 Day</ToggleButton>
+          <ToggleButton value={2}>2 Days</ToggleButton>
+          <ToggleButton value={7}>7 Days</ToggleButton>
+          <ToggleButton value={0}>All</ToggleButton>
+        </ToggleButtonGroup>
       </Stack>
 
       {filteredList.length === 0 ? (

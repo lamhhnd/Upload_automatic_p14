@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 
 import {
   Alert,
@@ -15,26 +15,25 @@ import {
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
 import { useVocab } from "../context/VocabContext";
-import { randomIndex } from "./random";
+import { getSmartRandomIndex } from "./random";
 
 type QuizMode =
   | "vn-to-en"
   | "en-to-vn";
 
 const MultipleChoice = () => {
-  const { vocabList, speak } = useVocab();
+  const { filteredVocabList, vocabList, speak, updateStats } = useVocab();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
-  // const [startDate, setStartDate] = useState("");
-  // const [endDate, setEndDate] = useState("");
+  const [dateFilter, setDateFilter] = useState<number>(0);
   const [index, setIndex] = useState(0);
 
   const uniqueTopics = useMemo(() => {
-    const topics = vocabList
+    const topics = filteredVocabList
       .map((v) => v.topic)
       .filter((t): t is string => !!t);
     return Array.from(new Set(topics)).sort();
-  }, [vocabList]);
+  }, [filteredVocabList]);
 
   const [result, setResult] = useState<
     "" | "correct" | "wrong"
@@ -43,9 +42,9 @@ const MultipleChoice = () => {
   const [mode, setMode] =
     useState<QuizMode>("vn-to-en");
 
-  // Lọc danh sách từ vựng theo nội dung tìm kiếm và thời gian
+  // Lọc danh sách từ vựng theo nội dung tìm kiếm, chủ đề và thời gian
   const filteredList = useMemo(() => {
-    return vocabList.filter((item) => {
+    return filteredVocabList.filter((item) => {
       const matchesSearch =
         item.english.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.vietnamese.toLowerCase().includes(searchTerm.toLowerCase());
@@ -54,29 +53,28 @@ const MultipleChoice = () => {
         selectedTopics.length === 0 || 
         (item.topic && selectedTopics.includes(item.topic));
 
-      /*
-      const itemDate = item.createdAt ? new Date(item.createdAt) : null;
       let matchesDate = true;
-
-      if (itemDate) {
-        if (startDate) {
-          const start = new Date(startDate);
-          start.setHours(0, 0, 0, 0);
-          if (itemDate < start) matchesDate = false;
-        }
-        if (endDate) {
-          const end = new Date(endDate);
-          end.setHours(23, 59, 59, 999);
-          if (itemDate > end) matchesDate = false;
-        }
-      } else if (startDate || endDate) {
-        matchesDate = false;
+      if (dateFilter !== 0 && item.createdAt) {
+        const itemDate = new Date(item.createdAt);
+        const now = new Date();
+        const diffTime = now.getTime() - itemDate.getTime();
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        matchesDate = diffDays < dateFilter;
       }
-      */
 
-      return matchesSearch && matchesTopic;
+      return matchesSearch && matchesTopic && matchesDate;
     });
-  }, [vocabList, searchTerm, selectedTopics]); // Removed startDate, endDate
+  }, [filteredVocabList, searchTerm, selectedTopics, dateFilter]);
+
+  // Reset index khi bộ lọc thay đổi
+  useEffect(() => {
+    if (filteredList.length > 0) {
+      setIndex(Math.floor(Math.random() * filteredList.length));
+    } else {
+      setIndex(0);
+    }
+    setResult("");
+  }, [searchTerm, selectedTopics, dateFilter, filteredList.length]);
 
   const current = filteredList.length > 0 ? filteredList[index] || filteredList[0] : null;
 
@@ -102,19 +100,18 @@ const MultipleChoice = () => {
     return [...wrongAnswers, current].sort(() => Math.random() - 0.5);
   }, [current, filteredList, vocabList]);
 
-  if (vocabList.length === 0) {
+  if (filteredVocabList.length === 0) {
     return (
-      <Typography sx={{ textAlign: "center" }}>
-        No vocabulary found. Please add some words in the Management tab.
-      </Typography>
+      <Box sx={{ pb: 4 }}>
+        <Typography sx={{ textAlign: "center", color: "#666" }}>
+          No vocabulary found. Please add some words in the Management tab.
+        </Typography>
+      </Box>
     );
   }
 
   const nextQuestion = () => {
-    setIndex(
-      randomIndex(filteredList.length, index)
-    );
-
+    setIndex(getSmartRandomIndex(filteredList, index));
     setResult("");
   };
 
@@ -127,28 +124,19 @@ const MultipleChoice = () => {
 
     if (answer === correctAnswer) {
       setResult("correct");
+      updateStats(current.id, true);
       // Phát âm khi trả lời đúng
       speak(current.english);
     } else {
       setResult("wrong");
+      updateStats(current.id, false);
     }
   };
 
   return (
     <Box sx={{ pb: 4 }}>
-      <Typography
-        variant="h4"
-        sx={{
-          textAlign: "center",
-          mb: 3,
-          fontWeight: 700,
-          color: "#222",
-        }}
-      >
-        Multiple Choice
-      </Typography>
 
-      {/* SEARCH & FILTERS - Optimized to not auto-trigger re-renders or layout jumps */}
+      {/* SEARCH & FILTERS */}
       <Stack spacing={2} sx={{ mb: 4 }}>
         <TextField
           fullWidth
@@ -174,6 +162,20 @@ const MultipleChoice = () => {
             <TextField {...params} variant="outlined" label="Filter by Topics" placeholder="Select topics..." />
           )}
         />
+        <ToggleButtonGroup
+          value={dateFilter}
+          exclusive
+          onChange={(_, newDate) => {
+            if (newDate !== null) setDateFilter(newDate);
+          }}
+          aria-label="date filter"
+          fullWidth
+        >
+          <ToggleButton value={1}>1 Day</ToggleButton>
+          <ToggleButton value={2}>2 Days</ToggleButton>
+          <ToggleButton value={7}>7 Days</ToggleButton>
+          <ToggleButton value={0}>All</ToggleButton>
+        </ToggleButtonGroup>
       </Stack>
 
       {filteredList.length === 0 ? (
@@ -231,7 +233,11 @@ const MultipleChoice = () => {
             {/* RESULT & NEXT CONTAINER */}
             <Box sx={{ mt: 1, minHeight: 100 }}>
               {result === "correct" && <Alert severity="success" sx={{ mb: 1 }}>Correct!</Alert>}
-              {result === "wrong" && <Alert severity="error" sx={{ mb: 1 }}>Wrong Answer!</Alert>}
+              {result === "wrong" && (
+                <Alert severity="error" sx={{ mb: 1 }}>
+                  Wrong Answer! Correct answer: <strong>{mode === "vn-to-en" ? current.english : current.vietnamese}</strong>
+                </Alert>
+              )}
 
               {result !== "" && (
                 <Button
