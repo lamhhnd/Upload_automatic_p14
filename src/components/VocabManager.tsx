@@ -23,10 +23,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import TranslateIcon from '@mui/icons-material/Translate';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import ImageIcon from '@mui/icons-material/Image';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
 import CircularProgress from '@mui/material/CircularProgress';
-import { useVocab, Vocab } from '../context/VocabContext';
+import { useVocab, Vocab, STANDARD_TOPICS } from '../context/VocabContext';
 import DictionaryDialog from './DictionaryDialog';
 import { translateToVietnamese } from '../services/TranslationService';
+import { searchImages, UnsplashImage } from '../services/ImageService';
+import { getExampleSentences } from '../services/ExampleService';
 
 const VocabManager: React.FC = () => {
   const { 
@@ -62,6 +66,54 @@ const VocabManager: React.FC = () => {
 
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const [isTranslating, setIsTranslating] = useState(false);
+  const [suggestedImages, setSuggestedImages] = useState<UnsplashImage[]>([]);
+  const [isSearchingImages, setIsSearchingImages] = useState(false);
+  const [suggestedExamples, setSuggestedExamples] = useState<string[]>([]);
+  const [isFetchingExamples, setIsFetchingExamples] = useState(false);
+
+  const handleSuggestExample = async () => {
+    if (!formData.english.trim()) return;
+    setIsFetchingExamples(true);
+    try {
+      const examples = await getExampleSentences(formData.english);
+      setSuggestedExamples(examples);
+    } finally {
+      setIsFetchingExamples(false);
+    }
+  };
+
+  // Tự động tìm kiếm ảnh khi từ tiếng Anh thay đổi (có debounce)
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (formData.english.trim().length >= 2 && open) {
+        setIsSearchingImages(true);
+        try {
+          const images = await searchImages(formData.english);
+          setSuggestedImages(images);
+        } finally {
+          setIsSearchingImages(false);
+        }
+      } else {
+        setSuggestedImages([]);
+        setSuggestedExamples([]); // Clear examples too
+      }
+    }, 800); // Đợi 800ms sau khi ngừng gõ
+
+    return () => clearTimeout(timer);
+  }, [formData.english, open]);
+
+  const handleSelectSuggestedImage = async (img: UnsplashImage) => {
+    try {
+      const response = await fetch(img.urls.regular);
+      const blob = await response.blob();
+      const file = new File([blob], `${formData.english}.jpg`, { type: 'image/jpeg' });
+      setFormData({ ...formData, imageFile: file });
+      setSuggestedImages([]);
+    } catch (error) {
+      console.error('Lỗi khi tải ảnh:', error);
+      alert('Không thể chọn ảnh này.');
+    }
+  };
 
   const handleTranslate = async () => {
     if (!formData.english.trim()) return;
@@ -165,10 +217,7 @@ const VocabManager: React.FC = () => {
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const success = await importVocab(file);
-      if (success) {
-        alert('Nhập dữ liệu thành công!');
-      }
+      await importVocab(file);
       e.target.value = '';
     }
   };
@@ -383,6 +432,18 @@ const VocabManager: React.FC = () => {
               >
                 <VolumeUpIcon />
               </IconButton>
+              <IconButton 
+                color="warning" 
+                onClick={() => {
+                  if (formData.english.trim()) {
+                    searchImages(formData.english).then(setSuggestedImages);
+                  }
+                }}
+                disabled={!formData.english.trim() || isSearchingImages}
+                title="Suggest Images"
+              >
+                <ImageIcon />
+              </IconButton>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <TextField
@@ -406,20 +467,62 @@ const VocabManager: React.FC = () => {
               value={formData.type}
               onChange={(e) => setFormData({ ...formData, type: e.target.value })}
             />
-            <TextField
-              label="Topic"
-              fullWidth
+            <Autocomplete
+              freeSolo
+              options={STANDARD_TOPICS}
               value={formData.topic}
-              onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
+              onInputChange={(event, newValue) => {
+                setFormData({ ...formData, topic: newValue });
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Topic" fullWidth />
+              )}
             />
-            <TextField
-              label="Example Sentence"
-              fullWidth
-              multiline
-              rows={2}
-              value={formData.example}
-              onChange={(e) => setFormData({ ...formData, example: e.target.value })}
-            />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <TextField
+                label="Example Sentence"
+                fullWidth
+                multiline
+                rows={2}
+                value={formData.example}
+                onChange={(e) => setFormData({ ...formData, example: e.target.value })}
+              />
+              <IconButton 
+                color="info" 
+                onClick={handleSuggestExample}
+                disabled={!formData.english.trim() || isFetchingExamples}
+                title="Auto Suggest Example"
+              >
+                {isFetchingExamples ? <CircularProgress size={24} /> : <AutoFixHighIcon />}
+              </IconButton>
+            </Box>
+
+            {suggestedExamples.length > 0 && (
+              <Box sx={{ bgcolor: 'action.hover', p: 1, borderRadius: 1 }}>
+                <Typography variant="caption" color="text.secondary" gutterBottom sx={{ display: 'block' }}>
+                  Click an example to use:
+                </Typography>
+                <Stack spacing={1}>
+                  {suggestedExamples.map((ex, i) => (
+                    <Typography 
+                      key={i} 
+                      variant="body2" 
+                      sx={{ 
+                        cursor: 'pointer', 
+                        p: 0.5, 
+                        '&:hover': { bgcolor: 'action.selected', borderRadius: 0.5 } 
+                      }}
+                      onClick={() => {
+                        setFormData({ ...formData, example: ex });
+                        setSuggestedExamples([]);
+                      }}
+                    >
+                      • {ex}
+                    </Typography>
+                  ))}
+                </Stack>
+              </Box>
+            )}
             
             <Box>
               <Typography variant="subtitle2" gutterBottom>
@@ -441,36 +544,77 @@ const VocabManager: React.FC = () => {
                   />
                 )}
                 <Stack spacing={1}>
-                  <Button
-                    variant="outlined"
-                    component="label"
-                    size="small"
-                  >
-                    {previewUrl ? 'Change Image' : 'Upload Image'}
-                    <input
-                      type="file"
-                      hidden
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          setFormData({ ...formData, imageFile: file });
-                        }
-                      }}
-                    />
-                  </Button>
+                  <Stack direction="row" spacing={1}>
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      size="small"
+                    >
+                      {previewUrl ? 'Change Image' : 'Upload Image'}
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setFormData({ ...formData, imageFile: file });
+                          }
+                        }}
+                      />
+                    </Button>
+                  </Stack>
                   {previewUrl && (
                     <Button
                       variant="text"
                       color="error"
                       size="small"
                       onClick={() => setFormData({ ...formData, image: '', imageFile: null })}
+                      sx={{ width: 'fit-content' }}
                     >
                       Remove
                     </Button>
                   )}
                 </Stack>
               </Stack>
+
+              {suggestedImages.length > 0 && (
+                <Box sx={{ mt: 2 }}>
+                  <Typography variant="caption" color="text.secondary" gutterBottom sx={{ display: 'block' }}>
+                    Click an image to select:
+                  </Typography>
+                  <Stack 
+                    direction="row" 
+                    spacing={1} 
+                    sx={{ 
+                      overflowX: 'auto', 
+                      pb: 1,
+                      '&::-webkit-scrollbar': { height: 6 },
+                      '&::-webkit-scrollbar-thumb': { backgroundColor: '#ccc', borderRadius: 3 }
+                    }}
+                  >
+                    {suggestedImages.map((img) => (
+                      <Box
+                        key={img.id}
+                        component="img"
+                        src={img.urls.thumb}
+                        alt={img.alt_description}
+                        onClick={() => handleSelectSuggestedImage(img)}
+                        sx={{
+                          width: 80,
+                          height: 80,
+                          objectFit: 'cover',
+                          borderRadius: 1,
+                          cursor: 'pointer',
+                          border: '2px solid transparent',
+                          '&:hover': { borderColor: 'primary.main' }
+                        }}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+              )}
+
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
                 {isFolderConnected 
                   ? "Ảnh sẽ được lưu tự động vào thư mục public/images/ của bạn." 

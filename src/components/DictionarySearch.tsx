@@ -19,13 +19,16 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Autocomplete,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import AddIcon from '@mui/icons-material/Add';
+import ImageIcon from '@mui/icons-material/Image';
 import { fetchDictionaryEntry, DictionaryEntry, Meaning, Definition } from '../services/DictionaryService';
 import { translateToVietnamese } from '../services/TranslationService';
-import { useVocab } from '../context/VocabContext';
+import { useVocab, STANDARD_TOPICS } from '../context/VocabContext';
+import { searchImages, UnsplashImage } from '../services/ImageService';
 
 const DictionarySearch: React.FC = () => {
   const [word, setWord] = useState('');
@@ -37,13 +40,58 @@ const DictionarySearch: React.FC = () => {
 
   // State for Saving Dialog
   const [saveDialogOpen, setSaveDialogOpen] = useState(false);
-  const [saveData, setSaveData] = useState({
+  const [saveData, setSaveData] = useState<{
+    english: string;
+    vietnamese: string;
+    type: string;
+    example: string;
+    topic: string;
+    imageFile?: File | null;
+  }>({
     english: '',
     vietnamese: '',
     type: '',
     example: '',
-    topic: 'General'
+    topic: 'General',
+    imageFile: null
   });
+
+  const [suggestedImages, setSuggestedImages] = useState<UnsplashImage[]>([]);
+  const [isSearchingImages, setIsSearchingImages] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+
+  // Tự động tìm kiếm ảnh khi hộp thoại mở
+  React.useEffect(() => {
+    if (saveDialogOpen && saveData.english) {
+      const fetchImages = async () => {
+        setIsSearchingImages(true);
+        try {
+          const images = await searchImages(saveData.english);
+          setSuggestedImages(images);
+        } finally {
+          setIsSearchingImages(false);
+        }
+      };
+      fetchImages();
+    } else {
+      setSuggestedImages([]);
+      setPreviewUrl('');
+    }
+  }, [saveDialogOpen, saveData.english]);
+
+  const handleSelectSuggestedImage = async (img: UnsplashImage) => {
+    try {
+      const response = await fetch(img.urls.regular);
+      const blob = await response.blob();
+      const file = new File([blob], `${saveData.english}.jpg`, { type: 'image/jpeg' });
+      setSaveData({ ...saveData, imageFile: file });
+      setPreviewUrl(img.urls.thumb);
+      setSuggestedImages([]);
+    } catch (error) {
+      console.error('Lỗi khi tải ảnh:', error);
+      alert('Không thể chọn ảnh này.');
+    }
+  };
 
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -98,6 +146,7 @@ const DictionarySearch: React.FC = () => {
       type: saveData.type,
       example: saveData.example,
       topic: saveData.topic,
+      imageFile: saveData.imageFile,
     });
 
     if (success) {
@@ -256,11 +305,16 @@ const DictionarySearch: React.FC = () => {
               value={saveData.type}
               onChange={(e) => setSaveData({ ...saveData, type: e.target.value })}
             />
-            <TextField
-              label="Topic"
-              fullWidth
+            <Autocomplete
+              freeSolo
+              options={STANDARD_TOPICS}
               value={saveData.topic}
-              onChange={(e) => setSaveData({ ...saveData, topic: e.target.value })}
+              onInputChange={(event, newValue) => {
+                setSaveData({ ...saveData, topic: newValue });
+              }}
+              renderInput={(params) => (
+                <TextField {...params} label="Topic" fullWidth />
+              )}
             />
             <TextField
               label="Example Sentence"
@@ -270,6 +324,62 @@ const DictionarySearch: React.FC = () => {
               value={saveData.example}
               onChange={(e) => setSaveData({ ...saveData, example: e.target.value })}
             />
+
+            <Box>
+              <Typography variant="subtitle2" gutterBottom>
+                Image Suggestion {isSearchingImages && <CircularProgress size={16} sx={{ ml: 1 }} />}
+              </Typography>
+              <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+                {previewUrl && (
+                  <Box
+                    component="img"
+                    src={previewUrl}
+                    alt="Preview"
+                    sx={{
+                      width: 80,
+                      height: 80,
+                      objectFit: "cover",
+                      borderRadius: 1,
+                      border: "1px solid #ddd"
+                    }}
+                  />
+                )}
+              </Stack>
+
+              {suggestedImages.length > 0 && (
+                <Box sx={{ mt: 2 }}>
+                  <Stack 
+                    direction="row" 
+                    spacing={1} 
+                    sx={{ 
+                      overflowX: 'auto', 
+                      pb: 1,
+                      '&::-webkit-scrollbar': { height: 6 },
+                      '&::-webkit-scrollbar-thumb': { backgroundColor: '#ccc', borderRadius: 3 }
+                    }}
+                  >
+                    {suggestedImages.map((img) => (
+                      <Box
+                        key={img.id}
+                        component="img"
+                        src={img.urls.thumb}
+                        alt={img.alt_description}
+                        onClick={() => handleSelectSuggestedImage(img)}
+                        sx={{
+                          width: 60,
+                          height: 60,
+                          objectFit: 'cover',
+                          borderRadius: 1,
+                          cursor: 'pointer',
+                          border: '2px solid transparent',
+                          '&:hover': { borderColor: 'primary.main' }
+                        }}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+              )}
+            </Box>
           </Stack>
         </DialogContent>
         <DialogActions>

@@ -15,6 +15,18 @@ export interface Vocab {
   wrongCount?: number;
 }
 
+export const STANDARD_TOPICS = [
+  'Education',
+  'Technology',
+  'Environment',
+  'Health',
+  'Government spending',
+  'Work & Career',
+  'Media & Advertising',
+  'Urbanization',
+  'General'
+];
+
 interface VocabContextType {
   vocabList: Vocab[];
   filteredVocabList: Vocab[];
@@ -275,9 +287,32 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const text = await file.text();
       const data = JSON.parse(text);
       if (Array.isArray(data)) {
-        const isValid = data.every(item => item.id && item.english && item.vietnamese);
-        if (isValid) {
-          setVocabList(data);
+        const existingWords = new Set(vocabList.map(v => v.english.toLowerCase().trim()));
+        const newItems: Vocab[] = [];
+        let skipCount = 0;
+
+        data.forEach((item, index) => {
+          if (item.english && item.vietnamese) {
+            const normalizedEnglish = item.english.toLowerCase().trim();
+            if (existingWords.has(normalizedEnglish)) {
+              skipCount++;
+            } else {
+              newItems.push({
+                ...item,
+                id: item.id || (Date.now() + index).toString(),
+                createdAt: item.createdAt || new Date().toISOString(),
+              });
+              existingWords.add(normalizedEnglish);
+            }
+          }
+        });
+
+        if (newItems.length > 0) {
+          setVocabList((prev) => [...prev, ...newItems]);
+          alert(`Nhập thành công ${newItems.length} từ mới. Bỏ qua ${skipCount} từ đã tồn tại.`);
+          return true;
+        } else {
+          alert(`Tất cả từ trong file (${skipCount} từ) đều đã tồn tại trong danh sách.`);
           return true;
         }
       }

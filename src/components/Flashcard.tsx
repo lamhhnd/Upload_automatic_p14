@@ -11,18 +11,21 @@ import {
   Autocomplete,
   ToggleButton,
   ToggleButtonGroup,
+  CircularProgress,
 } from "@mui/material";
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import ReorderIcon from '@mui/icons-material/Reorder';
+import ImageIcon from '@mui/icons-material/Image';
 
 import { useVocab } from "../context/VocabContext";
 import { getSmartRandomIndex } from "./random";
 import DictionaryDialog from "./DictionaryDialog";
+import { searchImages, UnsplashImage } from "../services/ImageService";
 
 const Flashcard = () => {
-  const { filteredVocabList, speak, updateStats } = useVocab();
+  const { filteredVocabList, speak, updateStats, updateVocab } = useVocab();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [dateFilter, setDateFilter] = useState<number>(0); // 0 (all), 1, 2, 7 days
@@ -30,6 +33,9 @@ const Flashcard = () => {
   const [flipped, setFlipped] = useState(false);
   const [dictionaryOpen, setDictionaryOpen] = useState(false);
   const [mode, setMode] = useState<"random" | "sequential">("random");
+
+  const [suggestedImages, setSuggestedImages] = useState<UnsplashImage[]>([]);
+  const [isSearchingImages, setIsSearchingImages] = useState(false);
 
   const uniqueTopics = useMemo(() => {
     const topics = filteredVocabList
@@ -75,6 +81,24 @@ const Flashcard = () => {
 
   const current = filteredList[index] || filteredList[0];
 
+  // Tự động tìm kiếm ảnh khi chuyển card
+  useEffect(() => {
+    if (current && !current.image) {
+      const fetchImages = async () => {
+        setIsSearchingImages(true);
+        try {
+          const images = await searchImages(current.english);
+          setSuggestedImages(images);
+        } finally {
+          setIsSearchingImages(false);
+        }
+      };
+      fetchImages();
+    } else {
+      setSuggestedImages([]);
+    }
+  }, [current]);
+
   const handleFlip = () => {
     if (current && !flipped) {
       updateStats(current.id, true);
@@ -94,6 +118,27 @@ const Flashcard = () => {
       setIndex((prev) => (prev + 1) % filteredList.length);
     }
     setFlipped(false);
+  };
+
+  const handleUpdateImage = async (img: UnsplashImage) => {
+    if (!current) return;
+    try {
+      const response = await fetch(img.urls.regular);
+      const blob = await response.blob();
+      const file = new File([blob], `${current.english}.jpg`, { type: 'image/jpeg' });
+      
+      const success = await updateVocab({
+        ...current,
+        imageFile: file
+      });
+      
+      if (success) {
+        setSuggestedImages([]);
+      }
+    } catch (error) {
+      console.error("Failed to update image:", error);
+      alert("Không thể cập nhật ảnh.");
+    }
   };
 
   return (
@@ -160,15 +205,15 @@ const Flashcard = () => {
           sx={{
             perspective: "1000px",
             display: "flex",
-            justifyContent: "center",
-            height: { xs: 320, sm: 420 },
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
           <Box
             onClick={handleFlip}
             sx={{
               width: { xs: '100%', sm: 500 },
-              height: '100%',
+              height: { xs: 320, sm: 420 },
               position: "relative",
               transformStyle: "preserve-3d",
               transition: "transform 0.6s ease",
@@ -222,6 +267,22 @@ const Flashcard = () => {
                 <IconButton color="primary" onClick={() => speak(current.english)} title="Speak">
                   <VolumeUpIcon />
                 </IconButton>
+                <IconButton 
+                  color="warning" 
+                  onClick={async () => {
+                    setIsSearchingImages(true);
+                    try {
+                      const images = await searchImages(current.english);
+                      setSuggestedImages(images);
+                    } finally {
+                      setIsSearchingImages(false);
+                    }
+                  }} 
+                  title="Suggest Images"
+                  disabled={isSearchingImages}
+                >
+                  <ImageIcon />
+                </IconButton>
               </Stack>
             </Card>
 
@@ -252,6 +313,51 @@ const Flashcard = () => {
               </Typography>
             </Card>
           </Box>
+
+          {/* Gợi ý ảnh cho Flashcard */}
+          {suggestedImages.length > 0 && (
+            <Box sx={{ mt: 3, width: { xs: '100%', sm: 500 } }}>
+              <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1, textAlign: 'center' }}>
+                Gợi ý hình ảnh (Click để cập nhật cho từ này):
+              </Typography>
+              <Stack 
+                direction="row" 
+                spacing={1} 
+                sx={{ 
+                  overflowX: 'auto', 
+                  pb: 1,
+                  justifyContent: 'center',
+                  '&::-webkit-scrollbar': { height: 6 },
+                  '&::-webkit-scrollbar-thumb': { backgroundColor: '#ccc', borderRadius: 3 }
+                }}
+              >
+                {suggestedImages.map((img) => (
+                  <Box
+                    key={img.id}
+                    component="img"
+                    src={img.urls.thumb}
+                    alt={img.alt_description}
+                    onClick={() => handleUpdateImage(img)}
+                    sx={{
+                      width: 60,
+                      height: 60,
+                      objectFit: 'cover',
+                      borderRadius: 1,
+                      cursor: 'pointer',
+                      border: '2px solid transparent',
+                      '&:hover': { borderColor: 'primary.main' }
+                    }}
+                  />
+                ))}
+              </Stack>
+            </Box>
+          )}
+          {isSearchingImages && (
+            <Box sx={{ mt: 2, textAlign: 'center' }}>
+              <CircularProgress size={24} />
+              <Typography variant="caption" sx={{ display: 'block', mt: 0.5 }}>Đang tìm ảnh gợi ý...</Typography>
+            </Box>
+          )}
         </Box>
       )}
 
