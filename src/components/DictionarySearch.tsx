@@ -24,7 +24,6 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import AddIcon from '@mui/icons-material/Add';
-import ImageIcon from '@mui/icons-material/Image';
 import { fetchDictionaryEntry, DictionaryEntry, Meaning, Definition } from '../services/DictionaryService';
 import { translateToVietnamese } from '../services/TranslationService';
 import { useVocab, STANDARD_TOPICS } from '../context/VocabContext';
