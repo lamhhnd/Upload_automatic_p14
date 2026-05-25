@@ -414,9 +414,15 @@ const VocabManager: React.FC = () => {
               </IconButton>
               <IconButton 
                 color="warning" 
-                onClick={() => {
+                onClick={async () => {
                   if (formData.english.trim()) {
-                    searchImages(formData.english).then(setSuggestedImages);
+                    setIsSearchingImages(true);
+                    try {
+                      const images = await searchImages(formData.english);
+                      setSuggestedImages(images);
+                    } finally {
+                      setIsSearchingImages(false);
+                    }
                   }
                 }}
                 disabled={!formData.english.trim() || isSearchingImages}

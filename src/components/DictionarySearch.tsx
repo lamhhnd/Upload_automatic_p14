@@ -25,7 +25,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import AddIcon from '@mui/icons-material/Add';
 import GTranslateIcon from '@mui/icons-material/GTranslate';
-import { fetchDictionaryEntry, DictionaryEntry, Meaning, Definition, fetchVietnameseMeaning, VietnameseMeaning } from '../services/DictionaryService';
+import { fetchDictionaryEntry, DictionaryEntry, fetchVietnameseMeaning, VietnameseMeaning } from '../services/DictionaryService';
 import { translateToVietnamese } from '../services/TranslationService';
 import { useVocab, STANDARD_TOPICS } from '../context/VocabContext';
 import { searchImages, UnsplashImage } from '../services/ImageService';
