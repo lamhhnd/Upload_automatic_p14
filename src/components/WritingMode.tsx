@@ -30,6 +30,7 @@ const WritingMode = () => {
     "" | "correct" | "wrong"
   >("");
   const [dictionaryOpen, setDictionaryOpen] = useState(false);
+  const [hintIndex, setHintIndex] = useState(0);
 
   const uniqueTopics = useMemo(() => {
     const topics = filteredVocabList
@@ -71,6 +72,7 @@ const WritingMode = () => {
     }
     setAnswer("");
     setResult("");
+    setHintIndex(0);
   }, [searchTerm, selectedTopics, dateFilter, filteredList.length]);
 
   if (filteredVocabList.length === 0) {
@@ -97,7 +99,6 @@ const WritingMode = () => {
       speak(current.english);
     } else {
       setResult("wrong");
-      updateStats(current.id, false);
     }
   };
 
@@ -106,11 +107,34 @@ const WritingMode = () => {
     setIndex(getSmartRandomIndex(filteredList, index));
     setAnswer("");
     setResult("");
+    setHintIndex(0);
+  };
+
+  const handleGiveUp = () => {
+    if (!current) return;
+    setResult("wrong");
+    updateStats(current.id, false);
+    setAnswer(current.english);
+  };
+
+  const handleHint = () => {
+    if (!current) return;
+    setHintIndex((prev) => Math.min(prev + 1, current.english.length));
+  };
+
+  const renderHint = () => {
+    if (!current || hintIndex === 0) return null;
+    const revealed = current.english.slice(0, hintIndex);
+    const hidden = current.english.slice(hintIndex).replace(/[a-zA-Z]/g, "_");
+    return (
+      <Typography variant="body2" sx={{ textAlign: "center", color: "primary.main", fontWeight: 'bold', letterSpacing: 2 }}>
+        Hint: {revealed}{hidden} ({current.english.length} letters)
+      </Typography>
+    );
   };
 
   return (
     <Box sx={{ maxWidth: 500, mx: 'auto' }}>
-
       <Stack spacing={2} sx={{ mb: 3 }}>
         <TextField
           fullWidth
@@ -175,21 +199,43 @@ const WritingMode = () => {
             <Typography variant="body2" sx={{ textAlign: "center", color: "#666", fontStyle: "italic" }}>
               Type: {current.type}
             </Typography>
-<TextField
-  fullWidth
-  label="English word"
-  value={answer}
-  onChange={(e) => setAnswer(e.target.value)}
-  onKeyPress={(e) => e.key === "Enter" && checkAnswer()}
-  disabled={result !== ""}
-/>
+
+            {renderHint()}
+
+            <TextField
+              fullWidth
+              label="English word"
+              value={answer}
+              onChange={(e) => {
+                setAnswer(e.target.value);
+                if (result === "wrong") setResult("");
+              }}
+              onKeyPress={(e) => e.key === "Enter" && checkAnswer()}
+              disabled={result === "correct"}
+              error={result === "wrong"}
+              helperText={result === "wrong" ? "Incorrect, try again!" : ""}
+              autoComplete="off"
+            />
 
             {/* Fixed height container for status feedback */}
             <Box sx={{ minHeight: 120 }}>
-              {result === "" && (
-                <Stack direction="row" spacing={2} sx={{ mt: 1 }}>
-                  <Button fullWidth variant="contained" onClick={checkAnswer}>Check</Button>
-                  <Button fullWidth variant="outlined" onClick={nextQuestion} disabled={filteredList.length <= 1}>Next</Button>
+              {result !== "correct" && (
+                <Stack direction="column" spacing={1} sx={{ mt: 1 }}>
+                  <Stack direction="row" spacing={2}>
+                    <Button fullWidth variant="contained" onClick={checkAnswer}>Check</Button>
+                    <Button 
+                      fullWidth 
+                      variant="outlined" 
+                      onClick={handleHint} 
+                      disabled={hintIndex >= current.english.length}
+                    >
+                      Hint
+                    </Button>
+                  </Stack>
+                  <Stack direction="row" spacing={2}>
+                    <Button fullWidth variant="text" color="error" onClick={handleGiveUp}>Give Up (Show Answer)</Button>
+                    <Button fullWidth variant="outlined" onClick={nextQuestion} disabled={filteredList.length <= 1}>Skip</Button>
+                  </Stack>
                 </Stack>
               )}
 
@@ -206,9 +252,9 @@ const WritingMode = () => {
                 </Box>
               )}
 
-              {result === "wrong" && (
+              {result === "wrong" && answer === current.english && (
                 <Box sx={{ mt: 1 }}>
-                  <Alert severity="error">Wrong! Answer: <strong>{current.english}</strong></Alert>
+                  <Alert severity="info">Answer: <strong>{current.english}</strong></Alert>
                   <Button fullWidth variant="contained" sx={{ mt: 1 }} onClick={nextQuestion}>Try Next</Button>
                 </Box>
               )}
@@ -222,7 +268,6 @@ const WritingMode = () => {
           </Box>
       ) : null}
     </Box>
-
   );
 };
 

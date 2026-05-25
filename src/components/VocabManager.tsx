@@ -82,26 +82,6 @@ const VocabManager: React.FC = () => {
     }
   };
 
-  // Tự động tìm kiếm ảnh khi từ tiếng Anh thay đổi (có debounce)
-  useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (formData.english.trim().length >= 2 && open) {
-        setIsSearchingImages(true);
-        try {
-          const images = await searchImages(formData.english);
-          setSuggestedImages(images);
-        } finally {
-          setIsSearchingImages(false);
-        }
-      } else {
-        setSuggestedImages([]);
-        setSuggestedExamples([]); // Clear examples too
-      }
-    }, 800); // Đợi 800ms sau khi ngừng gõ
-
-    return () => clearTimeout(timer);
-  }, [formData.english, open]);
-
   const handleSelectSuggestedImage = async (img: UnsplashImage) => {
     try {
       const response = await fetch(img.urls.regular);

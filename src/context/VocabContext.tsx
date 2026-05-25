@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import initialVocabData from '../data/vocab.json';
+import { storageService } from '../services/StorageService';
 
 export interface Vocab {
   id: string;
@@ -50,10 +51,31 @@ interface VocabContextType {
 const VocabContext = createContext<VocabContextType | undefined>(undefined);
 
 export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [vocabList, setVocabList] = useState<Vocab[]>(() => {
-    const saved = localStorage.getItem('vocab_data');
-    return saved ? JSON.parse(saved) : (initialVocabData as Vocab[]);
-  });
+  const [vocabList, setVocabList] = useState<Vocab[]>(initialVocabData as Vocab[]);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const saved = await storageService.getItem<Vocab[]>('vocab_data');
+        if (saved) {
+          setVocabList(saved);
+        } else {
+          const localSaved = localStorage.getItem('vocab_data');
+          if (localSaved) {
+            const parsed = JSON.parse(localSaved);
+            setVocabList(parsed);
+            await storageService.setItem('vocab_data', parsed);
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load data:', err);
+      } finally {
+        setIsLoaded(true);
+      }
+    };
+    loadData();
+  }, []);
 
   const [startDate, setStartDate] = useState<string>(() => {
     const d = new Date();
@@ -93,11 +115,13 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [dirHandle]);
 
   useEffect(() => {
-    localStorage.setItem('vocab_data', JSON.stringify(vocabList));
-    if (dirHandle) {
-      saveToDisk(vocabList);
+    if (isLoaded) {
+      storageService.setItem('vocab_data', vocabList);
+      if (dirHandle) {
+        saveToDisk(vocabList);
+      }
     }
-  }, [vocabList, dirHandle, saveToDisk]);
+  }, [vocabList, dirHandle, saveToDisk, isLoaded]);
 
   const speak = (text: string) => {
     if ('speechSynthesis' in window) {

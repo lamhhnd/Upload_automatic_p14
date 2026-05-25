@@ -81,22 +81,9 @@ const Flashcard = () => {
 
   const current = filteredList[index] || filteredList[0];
 
-  // Tự động tìm kiếm ảnh khi chuyển card
+  // Reset suggested images when card changes
   useEffect(() => {
-    if (current && !current.image) {
-      const fetchImages = async () => {
-        setIsSearchingImages(true);
-        try {
-          const images = await searchImages(current.english);
-          setSuggestedImages(images);
-        } finally {
-          setIsSearchingImages(false);
-        }
-      };
-      fetchImages();
-    } else {
-      setSuggestedImages([]);
-    }
+    setSuggestedImages([]);
   }, [current]);
 
   const handleFlip = () => {

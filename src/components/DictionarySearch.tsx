@@ -24,7 +24,8 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import AddIcon from '@mui/icons-material/Add';
-import { fetchDictionaryEntry, DictionaryEntry, Meaning, Definition } from '../services/DictionaryService';
+import GTranslateIcon from '@mui/icons-material/GTranslate';
+import { fetchDictionaryEntry, DictionaryEntry, Meaning, Definition, fetchVietnameseMeaning, VietnameseMeaning } from '../services/DictionaryService';
 import { translateToVietnamese } from '../services/TranslationService';
 import { useVocab, STANDARD_TOPICS } from '../context/VocabContext';
 import { searchImages, UnsplashImage } from '../services/ImageService';
@@ -34,6 +35,7 @@ const DictionarySearch: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [entries, setEntries] = useState<DictionaryEntry[]>([]);
+  const [viMeaning, setViMeaning] = useState<VietnameseMeaning | null>(null);
   const [autoTranslation, setAutoTranslation] = useState('');
   const { speak, addVocab } = useVocab();
 
@@ -99,17 +101,24 @@ const DictionarySearch: React.FC = () => {
     setLoading(true);
     setError(null);
     setEntries([]);
+    setViMeaning(null);
     setAutoTranslation('');
     
     try {
       // Run both in parallel
-      const [dictData, translation] = await Promise.all([
-        fetchDictionaryEntry(word.trim()),
+      const [dictData, vietnameseData, translation] = await Promise.all([
+        fetchDictionaryEntry(word.trim()).catch(() => []),
+        fetchVietnameseMeaning(word.trim()),
         translateToVietnamese(word.trim())
       ]);
       
       setEntries(dictData);
+      setViMeaning(vietnameseData);
       setAutoTranslation(translation);
+
+      if (dictData.length === 0 && !vietnameseData) {
+        setError('Không tìm thấy từ này trong từ điển.');
+      }
     } catch (err) {
       setError((err as Error).message);
     } finally {
@@ -122,12 +131,12 @@ const DictionarySearch: React.FC = () => {
     audio.play();
   };
 
-  const openSaveDialog = (entry: DictionaryEntry, meaning: Meaning, def: Definition) => {
+  const openSaveDialog = (english: string, vietnamese: string, type: string, example: string) => {
     setSaveData({
-      english: entry.word,
-      vietnamese: autoTranslation,
-      type: meaning.partOfSpeech,
-      example: def.example || '',
+      english,
+      vietnamese,
+      type,
+      example,
       topic: 'General'
     });
     setSaveDialogOpen(true);
@@ -188,6 +197,53 @@ const DictionarySearch: React.FC = () => {
       )}
 
       <Stack spacing={3}>
+        {/* Vietnamese Dictionary Card */}
+        {viMeaning && (
+          <Card variant="outlined" sx={{ borderRadius: 3, borderLeft: '6px solid', borderColor: 'secondary.main', bgcolor: '#fffaf0' }}>
+            <CardContent>
+              <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <GTranslateIcon color="secondary" />
+                  <Typography variant="h5" color="secondary" sx={{ fontWeight: 700 }}>
+                    Nghĩa Tiếng Việt
+                  </Typography>
+                </Box>
+                <Button 
+                  variant="outlined" 
+                  color="secondary" 
+                  size="small" 
+                  startIcon={<AddIcon />}
+                  onClick={() => openSaveDialog(word, viMeaning.definition, 'n', viMeaning.examples[0] || '')}
+                >
+                  Save This
+                </Button>
+              </Stack>
+              
+              <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>
+                {viMeaning.definition}
+              </Typography>
+
+              {viMeaning.examples.length > 0 && (
+                <Box>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    Ví dụ:
+                  </Typography>
+                  <List dense sx={{ py: 0 }}>
+                    {viMeaning.examples.map((ex, i) => (
+                      <ListItem key={i} sx={{ py: 0.5, px: 0 }}>
+                        <ListItemText 
+                          primary={<Typography variant="body2" sx={{ fontStyle: 'italic' }}>• {ex}</Typography>} 
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
+        {/* English Dictionary Entries */}
         {entries.map((entry, entryIndex) => (
           <Card key={entryIndex} variant="outlined" sx={{ borderRadius: 3 }}>
             <CardContent>
@@ -255,7 +311,7 @@ const DictionarySearch: React.FC = () => {
                             size="small"
                             color="success"
                             startIcon={<AddIcon />}
-                            onClick={() => openSaveDialog(entry, meaning, def)}
+                            onClick={() => openSaveDialog(entry.word, autoTranslation, meaning.partOfSpeech, def.example || '')}
                             sx={{ height: 'fit-content', ml: 2 }}
                           >
                             Save

@@ -42,3 +42,42 @@ export const fetchDictionaryEntry = async (word: string): Promise<DictionaryEntr
   
   return await response.json();
 };
+
+export interface VietnameseMeaning {
+  definition: string;
+  examples: string[];
+}
+
+export const fetchVietnameseMeaning = async (word: string): Promise<VietnameseMeaning | null> => {
+  try {
+    // Sử dụng MyMemory API để lấy nghĩa chi tiết và các ví dụ
+    const response = await fetch(
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|vi`
+    );
+    
+    if (!response.ok) return null;
+    
+    const data = await response.json();
+    
+    if (data.responseData && data.responseData.translatedText) {
+      const examples: string[] = [];
+      if (data.matches && Array.isArray(data.matches)) {
+        data.matches.forEach((match: any) => {
+          if (match.usage && !examples.includes(match.usage)) {
+            examples.push(match.usage);
+          }
+        });
+      }
+
+      return {
+        definition: data.responseData.translatedText,
+        examples: examples.slice(0, 3) // Lấy tối đa 3 ví dụ
+      };
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Vietnamese dictionary fetch error:', error);
+    return null;
+  }
+};
