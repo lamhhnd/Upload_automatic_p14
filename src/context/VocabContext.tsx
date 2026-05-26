@@ -16,6 +16,13 @@ export interface Vocab {
   wrongCount?: number;
 }
 
+export interface Reading {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;
+}
+
 export const STANDARD_TOPICS = [
   'Education',
   'Technology',
@@ -31,6 +38,7 @@ export const STANDARD_TOPICS = [
 interface VocabContextType {
   vocabList: Vocab[];
   filteredVocabList: Vocab[];
+  readings: Reading[];
   startDate: string;
   endDate: string;
   setStartDate: (date: string) => void;
@@ -39,6 +47,9 @@ interface VocabContextType {
   updateVocab: (vocab: Vocab & { imageFile?: File | null }) => Promise<boolean>;
   deleteVocab: (id: string) => Promise<void>;
   updateStats: (id: string, isCorrect: boolean) => void;
+  addReading: (reading: Omit<Reading, 'id' | 'createdAt'>) => Promise<void>;
+  updateReading: (reading: Reading) => Promise<void>;
+  deleteReading: (id: string) => Promise<void>;
   resetToDefault: () => void;
   connectProjectFolder: () => Promise<void>;
   speak: (text: string) => void;
@@ -52,6 +63,7 @@ const VocabContext = createContext<VocabContextType | undefined>(undefined);
 
 export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [vocabList, setVocabList] = useState<Vocab[]>(initialVocabData as Vocab[]);
+  const [readings, setReadings] = useState<Reading[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -67,6 +79,11 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             setVocabList(parsed);
             await storageService.setItem('vocab_data', parsed);
           }
+        }
+
+        const savedReadings = await storageService.getItem<Reading[]>('readings_data');
+        if (savedReadings) {
+          setReadings(savedReadings);
         }
       } catch (err) {
         console.error('Failed to load data:', err);
@@ -114,6 +131,22 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   }, [dirHandle]);
 
+  const saveReadingsToDisk = React.useCallback(async (data: Reading[]) => {
+    if (!dirHandle) return;
+    try {
+      const srcDir = await dirHandle.getDirectoryHandle('src', { create: true });
+      const dataDir = await srcDir.getDirectoryHandle('data', { create: true });
+      const fileHandle = await dataDir.getFileHandle('readings.json', { create: true });
+      
+      const writable = await fileHandle.createWritable();
+      await writable.write(JSON.stringify(data, null, 2));
+      await writable.close();
+      console.log('Successfully saved readings.json to disk');
+    } catch (err) {
+      console.error('Failed to save readings to disk:', err);
+    }
+  }, [dirHandle]);
+
   useEffect(() => {
     if (isLoaded) {
       storageService.setItem('vocab_data', vocabList);
@@ -122,6 +155,15 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       }
     }
   }, [vocabList, dirHandle, saveToDisk, isLoaded]);
+
+  useEffect(() => {
+    if (isLoaded) {
+      storageService.setItem('readings_data', readings);
+      if (dirHandle) {
+        saveReadingsToDisk(readings);
+      }
+    }
+  }, [readings, dirHandle, saveReadingsToDisk, isLoaded]);
 
   const speak = (text: string) => {
     if ('speechSynthesis' in window) {
@@ -210,13 +252,28 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       try {
         const srcDir = await handle.getDirectoryHandle('src', { create: true });
         const dataDir = await srcDir.getDirectoryHandle('data', { create: true });
-        const fileHandle = await dataDir.getFileHandle('vocab.json');
-        const file = await fileHandle.getFile();
-        const text = await file.text();
-        const data = JSON.parse(text);
-        setVocabList(data);
+        
+        // Load vocab
+        try {
+          const vocabHandle = await dataDir.getFileHandle('vocab.json');
+          const vocabFile = await vocabHandle.getFile();
+          const vocabText = await vocabFile.text();
+          setVocabList(JSON.parse(vocabText));
+        } catch (e) {
+          console.log('No existing vocab.json found on disk');
+        }
+
+        // Load readings
+        try {
+          const readingsHandle = await dataDir.getFileHandle('readings.json');
+          const readingsFile = await readingsHandle.getFile();
+          const readingsText = await readingsFile.text();
+          setReadings(JSON.parse(readingsText));
+        } catch (e) {
+          console.log('No existing readings.json found on disk');
+        }
       } catch (e) {
-        console.log('No existing vocab.json found on disk, using current data');
+        console.error('Failed to load data from disk', e);
       }
     } catch (err) {
       console.error('Directory picker cancelled or failed', err);
@@ -296,10 +353,32 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     );
   };
 
+  const addReading = async (reading: Omit<Reading, 'id' | 'createdAt'>) => {
+    const newReading: Reading = {
+      id: Date.now().toString(),
+      title: reading.title,
+      content: reading.content,
+      createdAt: new Date().toISOString()
+    };
+    setReadings(prev => [...prev, newReading]);
+  };
+
+  const updateReading = async (updatedReading: Reading) => {
+    setReadings(prev => prev.map(r => r.id === updatedReading.id ? updatedReading : r));
+  };
+
+  const deleteReading = async (id: string) => {
+    setReadings(prev => prev.filter(r => r.id !== id));
+  };
+
   const exportVocab = () => {
-    const dataStr = JSON.stringify(vocabList, null, 2);
+    const data = {
+      vocab: vocabList,
+      readings: readings
+    };
+    const dataStr = JSON.stringify(data, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    const exportFileDefaultName = `vocab_export_${new Date().toISOString().split('T')[0]}.json`;
+    const exportFileDefaultName = `ielts_data_export_${new Date().toISOString().split('T')[0]}.json`;
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
@@ -309,39 +388,94 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const importVocab = async (file: File): Promise<boolean> => {
     try {
       const text = await file.text();
-      const data = JSON.parse(text);
-      if (Array.isArray(data)) {
-        const existingWords = new Set(vocabList.map(v => v.english.toLowerCase().trim()));
-        const newItems: Vocab[] = [];
-        let skipCount = 0;
+      const jsonData = JSON.parse(text);
+      
+      let incomingVocab: Vocab[] = [];
+      let incomingReadings: Reading[] = [];
 
-        data.forEach((item, index) => {
+      // Phân tích dữ liệu theo cấu trúc mới hoặc cũ
+      if (Array.isArray(jsonData)) {
+        // Cấu trúc cũ: chỉ là mảng vocab
+        incomingVocab = jsonData;
+      } else if (jsonData && (jsonData.vocab || jsonData.readings)) {
+        // Cấu trúc mới: object có vocab và/hoặc readings
+        incomingVocab = jsonData.vocab || [];
+        incomingReadings = jsonData.readings || [];
+      } else {
+        alert('File JSON không đúng cấu trúc dữ liệu.');
+        return false;
+      }
+
+      // Xử lý nhập Vocabulary
+      let vocabAdded = 0;
+      let vocabSkipped = 0;
+      if (incomingVocab.length > 0) {
+        const existingWords = new Set(vocabList.map(v => v.english.toLowerCase().trim()));
+        const newVocabItems: Vocab[] = [];
+
+        incomingVocab.forEach((item: any, index: number) => {
           if (item.english && item.vietnamese) {
             const normalizedEnglish = item.english.toLowerCase().trim();
             if (existingWords.has(normalizedEnglish)) {
-              skipCount++;
+              vocabSkipped++;
             } else {
-              newItems.push({
+              newVocabItems.push({
                 ...item,
-                id: item.id || (Date.now() + index).toString(),
+                id: item.id || `${Date.now()}-v-${index}`,
                 createdAt: item.createdAt || new Date().toISOString(),
               });
               existingWords.add(normalizedEnglish);
+              vocabAdded++;
             }
           }
         });
 
-        if (newItems.length > 0) {
-          setVocabList((prev) => [...prev, ...newItems]);
-          alert(`Nhập thành công ${newItems.length} từ mới. Bỏ qua ${skipCount} từ đã tồn tại.`);
-          return true;
-        } else {
-          alert(`Tất cả từ trong file (${skipCount} từ) đều đã tồn tại trong danh sách.`);
-          return true;
+        if (newVocabItems.length > 0) {
+          setVocabList((prev) => [...prev, ...newVocabItems]);
         }
       }
-      alert('File JSON không đúng cấu trúc từ vựng.');
-      return false;
+
+      // Xử lý nhập Readings
+      let readingsAdded = 0;
+      let readingsSkipped = 0;
+      if (incomingReadings.length > 0) {
+        const existingReadingTitles = new Set(readings.map(r => r.title.toLowerCase().trim()));
+        const newReadingItems: Reading[] = [];
+
+        incomingReadings.forEach((item: any, index: number) => {
+          if (item.title && item.content) {
+            const normalizedTitle = item.title.toLowerCase().trim();
+            if (existingReadingTitles.has(normalizedTitle)) {
+              readingsSkipped++;
+            } else {
+              newReadingItems.push({
+                ...item,
+                id: item.id || `${Date.now()}-r-${index}`,
+                createdAt: item.createdAt || new Date().toISOString(),
+              });
+              existingReadingTitles.add(normalizedTitle);
+              readingsAdded++;
+            }
+          }
+        });
+
+        if (newReadingItems.length > 0) {
+          setReadings((prev) => [...prev, ...newReadingItems]);
+        }
+      }
+
+      let message = '';
+      if (vocabAdded > 0 || readingsAdded > 0) {
+        message += `Nhập thành công: ${vocabAdded} từ vựng, ${readingsAdded} bài đọc.\n`;
+      }
+      if (vocabSkipped > 0 || readingsSkipped > 0) {
+        message += `Bỏ qua (đã tồn tại): ${vocabSkipped} từ vựng, ${readingsSkipped} bài đọc.`;
+      }
+      
+      if (!message) message = 'Không có dữ liệu mới để nhập.';
+      alert(message);
+      return true;
+
     } catch (err) {
       console.error('Import failed:', err);
       alert('Lỗi khi đọc file JSON.');
@@ -359,6 +493,7 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <VocabContext.Provider value={{ 
         vocabList, 
         filteredVocabList,
+        readings,
         startDate,
         endDate,
         setStartDate,
@@ -367,6 +502,9 @@ export const VocabProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         updateVocab, 
         deleteVocab, 
         updateStats,
+        addReading,
+        updateReading,
+        deleteReading,
         resetToDefault, 
         connectProjectFolder, 
         speak,

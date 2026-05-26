@@ -19,14 +19,17 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import QuizIcon from '@mui/icons-material/Quiz';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SearchIcon from '@mui/icons-material/Search';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 import Flashcard from "./components/Flashcard";
 import WritingMode from "./components/WritingMode";
 import MultipleChoice from "./components/MultipleChoice";
 import VocabManager from "./components/VocabManager";
+import ReadingManager from "./components/ReadingManager";
 import DictionarySearch from "./components/DictionarySearch";
 import DateRangeSelector from "./components/DateRangeSelector";
 import { VocabProvider } from "./context/VocabContext";
+import AIChatBox from "./components/AIChatBox";
 
 const theme = createTheme({
   palette: {
@@ -53,7 +56,7 @@ const theme = createTheme({
 
 function AppContent() {
   const [mode, setMode] = useState<
-    "flashcard" | "writing" | "multiple" | "search" | "manage"
+    "flashcard" | "writing" | "multiple" | "search" | "manage" | "reading"
   >("flashcard");
 
   const muiTheme = useTheme();
@@ -69,7 +72,7 @@ function AppContent() {
         pb: { xs: 12, sm: 4 },
       }}
     >
-      <Container maxWidth={mode === "manage" || mode === "search" ? "lg" : "sm"}>
+      <Container maxWidth={mode === "manage" || mode === "search" || mode === "reading" ? "lg" : "sm"}>
         <Box sx={{ mb: 4, textAlign: 'center' }}>
           <Typography
             variant="h4"
@@ -121,6 +124,7 @@ function AppContent() {
                 <BottomNavigationAction label="Cards" value="flashcard" icon={<StyleIcon />} />
                 <BottomNavigationAction label="Write" value="writing" icon={<EditNoteIcon />} />
                 <BottomNavigationAction label="Quiz" value="multiple" icon={<QuizIcon />} />
+                <BottomNavigationAction label="Reading" value="reading" icon={<MenuBookIcon />} />
                 <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} />
                 <BottomNavigationAction label="Manage" value="manage" icon={<SettingsIcon />} />
               </BottomNavigation>
@@ -134,6 +138,7 @@ function AppContent() {
             {mode === "flashcard" && <Flashcard />}
             {mode === "writing" && <WritingMode />}
             {mode === "multiple" && <MultipleChoice />}
+            {mode === "reading" && <ReadingManager />}
             {mode === "search" && <DictionarySearch />}
             {mode === "manage" && <VocabManager />}
           </Box>
@@ -143,26 +148,48 @@ function AppContent() {
       {/* Bottom Navigation for Mobile */}
       {isMobile && (
         <Paper 
-          sx={{ position: 'fixed', bottom: 16, left: 16, right: 16, borderRadius: 4, overflow: 'hidden', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }} 
+          sx={{ 
+            position: 'fixed', 
+            bottom: 16, 
+            left: 16, 
+            right: 16, 
+            borderRadius: 4, 
+            overflow: 'hidden', 
+            boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)',
+            zIndex: 1000
+          }} 
           elevation={3}
         >
-          <BottomNavigation
-            showLabels
-            value={mode}
-            onChange={(_, newValue) => {
-              setMode(newValue);
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            sx={{ height: 72 }}
-          >
-            <BottomNavigationAction label="Cards" value="flashcard" icon={<StyleIcon />} />
-            <BottomNavigationAction label="Write" value="writing" icon={<EditNoteIcon />} />
-            <BottomNavigationAction label="Quiz" value="multiple" icon={<QuizIcon />} />
-            <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} />
-            <BottomNavigationAction label="Manage" value="manage" icon={<SettingsIcon />} />
-          </BottomNavigation>
+          <Box sx={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+            <BottomNavigation
+              showLabels
+              value={mode}
+              onChange={(_, newValue) => {
+                setMode(newValue);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              sx={{ 
+                height: 72,
+                width: 'max-content',
+                minWidth: '100%',
+                '& .MuiBottomNavigationAction-root': {
+                  minWidth: 80,
+                  px: 1
+                }
+              }}
+            >
+              <BottomNavigationAction label="Cards" value="flashcard" icon={<StyleIcon />} />
+              <BottomNavigationAction label="Write" value="writing" icon={<EditNoteIcon />} />
+              <BottomNavigationAction label="Quiz" value="multiple" icon={<QuizIcon />} />
+              <BottomNavigationAction label="Reading" value="reading" icon={<MenuBookIcon />} />
+              <BottomNavigationAction label="Search" value="search" icon={<SearchIcon />} />
+              <BottomNavigationAction label="Manage" value="manage" icon={<SettingsIcon />} />
+            </BottomNavigation>
+          </Box>
         </Paper>
       )}
+
+      <AIChatBox />
     </Box>
   );
 }

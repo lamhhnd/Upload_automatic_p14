@@ -123,12 +123,19 @@ const WritingMode = () => {
   };
 
   const renderHint = () => {
-    if (!current || hintIndex === 0) return null;
-    const revealed = current.english.slice(0, hintIndex);
-    const hidden = current.english.slice(hintIndex).replace(/[a-zA-Z]/g, "_");
+    if (!current) return null;
+    const word = current.english;
+    let hint = "";
+    for (let i = 0; i < word.length; i++) {
+      if (i === 0 || i === word.length - 1 || i < hintIndex || word[i] === " ") {
+        hint += word[i];
+      } else {
+        hint += "_";
+      }
+    }
     return (
       <Typography variant="body2" sx={{ textAlign: "center", color: "primary.main", fontWeight: 'bold', letterSpacing: 2 }}>
-        Hint: {revealed}{hidden} ({current.english.length} letters)
+        Hint: {hint} ({word.length} letters)
       </Typography>
     );
   };
@@ -210,8 +217,20 @@ const WritingMode = () => {
                 setAnswer(e.target.value);
                 if (result === "wrong") setResult("");
               }}
-              onKeyPress={(e) => e.key === "Enter" && checkAnswer()}
-              disabled={result === "correct"}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  if (result === "correct") {
+                    nextQuestion();
+                  } else {
+                    checkAnswer();
+                  }
+                }
+              }}
+              slotProps={{
+                input: {
+                  readOnly: result === "correct",
+                },
+              }}
               error={result === "wrong"}
               helperText={result === "wrong" ? "Incorrect, try again!" : ""}
               autoComplete="off"
