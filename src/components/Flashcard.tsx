@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 
 import {
   Box,
@@ -17,6 +17,8 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import ShuffleIcon from '@mui/icons-material/Shuffle';
 import ReorderIcon from '@mui/icons-material/Reorder';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import StopIcon from '@mui/icons-material/Stop';
 import ImageIcon from '@mui/icons-material/Image';
 
 import { useVocab } from "../context/VocabContext";
@@ -33,6 +35,8 @@ const Flashcard = () => {
   const [flipped, setFlipped] = useState(false);
   const [dictionaryOpen, setDictionaryOpen] = useState(false);
   const [mode, setMode] = useState<"random" | "sequential">("random");
+  const [isAutoplay, setIsAutoplay] = useState(false);
+  const autoplayRef = useRef(false);
 
   const [suggestedImages, setSuggestedImages] = useState<UnsplashImage[]>([]);
   const [isSearchingImages, setIsSearchingImages] = useState(false);
@@ -68,6 +72,65 @@ const Flashcard = () => {
       return matchesSearch && matchesTopic && matchesDate;
     });
   }, [filteredVocabList, searchTerm, selectedTopics, dateFilter]);
+
+  const speakWithPromise = (text: string, lang: string = 'en-US'): Promise<void> => {
+    return new Promise((resolve) => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        const voices = window.speechSynthesis.getVoices();
+        
+        // Find voice matching the language
+        const preferredVoice = voices.find(v => v.lang.startsWith(lang.split('-')[0])) ||
+                               voices.find(v => v.lang === lang);
+        
+        if (preferredVoice) {
+          utterance.voice = preferredVoice;
+        }
+        utterance.lang = lang;
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        utterance.onend = () => resolve();
+        window.speechSynthesis.speak(utterance);
+      } else {
+        resolve();
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (!isAutoplay) return;
+    
+    let cancelled = false;
+    const play = async () => {
+      let currentIndex = index;
+      while (!cancelled && autoplayRef.current) {
+        const item = filteredList[currentIndex];
+        if (!item) break;
+        
+        // Ensure card is not flipped during reading
+        setFlipped(false);
+        await new Promise(r => setTimeout(r, 500)); // Pause before starting word
+
+        await speakWithPromise(item.english, 'en-US');
+        await new Promise(r => setTimeout(r, 1000)); // Pause between word and meaning
+        
+        await speakWithPromise(item.vietnamese, 'vi-VN');
+        await new Promise(r => setTimeout(r, 1000)); // Pause between meaning and example
+        
+        await speakWithPromise(item.example, 'en-US');
+        await new Promise(r => setTimeout(r, 5000)); // 5s Pause between words
+        
+        if (cancelled || !autoplayRef.current) break;
+        
+        currentIndex = (currentIndex + 1) % filteredList.length;
+        setIndex(currentIndex);
+      }
+      setIsAutoplay(false);
+    };
+    play();
+    return () => { cancelled = true; };
+  }, [isAutoplay, filteredList, index]);
 
   // Reset index khi bộ lọc thay đổi
   useEffect(() => {
@@ -354,15 +417,32 @@ const Flashcard = () => {
             Click vào card để lật
           </Typography>
 
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{ display: "flex", justifyContent: "center", flexDirection: 'column', gap: 2 }}>
             <Button
               fullWidth
               variant="contained"
               size="large"
               onClick={nextCard}
-              disabled={filteredList.length <= 1}
+              disabled={filteredList.length <= 1 || isAutoplay}
             >
               Next Card
+            </Button>
+            
+            <Button
+              fullWidth
+              variant={isAutoplay ? "outlined" : "contained"}
+              color={isAutoplay ? "error" : "primary"}
+              size="large"
+              startIcon={isAutoplay ? <StopIcon /> : <PlayArrowIcon />}
+              onClick={() => {
+                autoplayRef.current = !isAutoplay;
+                setIsAutoplay(!isAutoplay);
+                if (isAutoplay) {
+                    window.speechSynthesis.cancel();
+                }
+              }}
+            >
+              {isAutoplay ? "Stop Autoplay" : "Start Autoplay"}
             </Button>
           </Box>
 
